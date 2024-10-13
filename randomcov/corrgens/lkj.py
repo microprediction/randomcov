@@ -2,7 +2,7 @@ import numpy as np
 from scipy.stats import beta, norm
 
 
-def lkj_corr(n, eta):
+def lkj_corr(n, eta=0.5):
     """
     Generates a random correlation matrix using the LKJ prior.
 
@@ -52,3 +52,4 @@ def lkj_cholesky(n, eta):
         L[i, :i] = vi / vi_norm * np.sqrt(1 - ui)
 
     return L
+

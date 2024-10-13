@@ -1,6 +1,6 @@
 import numpy as np
 from numpy.linalg import eigvals
-from randomcov.lkj import lkj_corr
+from randomcov.corrgens.lkj import lkj_corr
 
 
 def test_lkj_corr_shape():
