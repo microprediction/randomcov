@@ -6,6 +6,11 @@ Generating random covariance and correlation matrices
 
     pip install randomcov 
 
+or for latest
+
+    pip install git+https://github.com/microprediction/randomcov.git
+    
+
 ### Example
 
     from randomcov import random_covariance_matrix
