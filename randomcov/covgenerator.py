@@ -33,8 +33,6 @@ def cov_generator_name(corr_method, var_method):
 
 
 
-
-
 if __name__=='__main__':
     cov = cov_generator(n=5, corr_method='lkj', var_method='lognormal')
     print(cov)

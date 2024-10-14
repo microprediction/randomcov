@@ -8,5 +8,5 @@ Generating random covariance and correlation matrices
 
 ### Example
 
-    from randomcov import lkj_corr
-    print(lkj_corr(n=5,eta=0.5))
+    from randomcov import cov_generator
+    cov = cov_generator(n=50, corr_method='residuals', var_method='lognormal')
