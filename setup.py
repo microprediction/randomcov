@@ -7,7 +7,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="randomcov",
-    version="0.0.4",
+    version="0.0.6",
     description="Random covariance generation",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -26,6 +26,7 @@ setup(
     ],
     packages=["randomcov",
               "randomcov.corrgens",
+              "randomcov.corrgensutil",
               "randomcov.vargens"
               ],
     test_suite='pytest',
