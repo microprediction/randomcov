@@ -24,7 +24,9 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
     ],
-    packages=["randomcov"
+    packages=["randomcov",
+              "randomcov.corrgens",
+              "randomcov.vargens"
               ],
     test_suite='pytest',
     tests_require=['pytest'],

@@ -1,6 +1,4 @@
-
-from randomcov.corrgens.lkj import lkj_corr
-CORR_GENERATORS = [lkj_corr]
+from randomcov.corrgens.allcorrgens import CORR_GENERATORS
 
 
 def corr_generator(n, corr_method:str, corr_kwargs :dict=None):
