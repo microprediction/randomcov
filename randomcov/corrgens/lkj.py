@@ -5,6 +5,7 @@ from scipy.stats import beta, norm
 def lkj_corr(n, eta=0.5):
     """
     Generates a random correlation matrix using the LKJ prior.
+    https://en.wikipedia.org/wiki/Lewandowski-Kurowicka-Joe_distribution
 
     Args:
         n (int): Dimension of the correlation matrix.

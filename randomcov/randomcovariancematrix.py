@@ -10,7 +10,7 @@ import numpy as np
 
 
 
-def random_covariance_matrix(n, corr_method:str='ljk', var_method:str='lognormal', corr_kwargs:dict=None, var_kwargs:dict=None):
+def random_covariance_matrix(n, corr_method:str='lkj', var_method:str='lognormal', corr_kwargs:dict=None, var_kwargs:dict=None):
     """
 
         Returns a random covariance matrix
