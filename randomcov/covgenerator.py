@@ -28,6 +28,11 @@ def cov_generator(n, corr_method, var_method, corr_kwargs:dict=None, var_kwargs:
     cov = corr * devos[:, np.newaxis] * devos[np.newaxis, :]
     return cov
 
+def cov_generator_name(corr_method, var_method):
+    return f"{corr_method.__name__.replace('_corr','')}-{var_method.__name__replace('_var','')}"
+
+
+
 
 
 if __name__=='__main__':

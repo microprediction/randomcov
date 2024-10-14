@@ -7,7 +7,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="randomcov",
-    version="0.0.1",
+    version="0.0.2",
     description="Random covariance generation",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -31,7 +31,7 @@ setup(
     test_suite='pytest',
     tests_require=['pytest'],
     include_package_data=True,
-    install_requires=['numpy'],
+    install_requires=['numpy','scikit-learn','scipy'],
     entry_points={
         "console_scripts": [
             "randomcov=randomcov.__main__:main",
