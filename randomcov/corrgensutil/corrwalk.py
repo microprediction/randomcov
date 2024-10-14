@@ -1,4 +1,4 @@
-from randomcov.corrgens.nearestcorr import nearest_corr
+from randomcov.corrgensutil.nearestcorr import nearest_corr
 import numpy as np
 
 
@@ -37,7 +37,7 @@ def corr_walk(initial_correlation_matrix, steps=100, epsilon=0.01):
 if __name__ == "__main__":
     # Initial correlation matrix (identity matrix)
     n = 5
-    rho = 0.3 
+    rho = 0.3
     corr0 = np.eye(n)*(1-rho) + rho*np.ones(n)
 
     # Perform random walk over correlation matrices

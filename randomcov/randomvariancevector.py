@@ -1,9 +1,9 @@
 from randomcov.vargens.allvargens import VAR_GENERATORS
 
 
-def var_generator(n, var_method:str, var_kwargs :dict=None):
+def random_variance_vector(n, var_method:str, var_kwargs :dict=None):
     """
-         Dispatch to variance generation
+         Dispatch by name to variance vector generation
     """
     if var_kwargs is None:
         var_kwargs = {}
@@ -15,5 +15,5 @@ def var_generator(n, var_method:str, var_kwargs :dict=None):
 
 
 if __name__=='__main__':
-    vars = var_generator(n=6, var_method='lognormal')
+    vars = random_variance_vector(n=6, var_method='lognormal')
     print(vars)
