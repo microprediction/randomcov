@@ -1,5 +1,5 @@
-from randomcov.corrgensutil.isvalidcorr import is_valid_corr
-from randomcov.corrgensutil.nearestposdef import nearest_positive_def
+from randomcov.corrutil.isvalidcorr import is_valid_corr
+from randomcov.covutil.nearestposdef import nearest_positive_def
 from randomcov.corrgens.wishart import wishart_corr
 import numpy as np
 import pandas as pd

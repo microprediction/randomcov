@@ -1,5 +1,5 @@
 from randomcov.corrgens.wishart import wishart_corr
-from randomcov.corrgensutil.isvalidcorr import is_valid_corr
+from randomcov.corrutil.isvalidcorr import is_valid_corr
 
 
 def test_wishart_corr_small():

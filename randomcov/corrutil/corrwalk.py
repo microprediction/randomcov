@@ -1,4 +1,4 @@
-from randomcov.corrgensutil.nearestcorr import nearest_corr
+from randomcov.corrutil.nearestcorr import nearest_corr
 import numpy as np
 
 

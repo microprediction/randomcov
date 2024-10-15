@@ -26,8 +26,9 @@ setup(
     ],
     packages=["randomcov",
               "randomcov.corrgens",
-              "randomcov.corrgensutil",
+              "randomcov.corrutil",
               "randomcov.vargens",
+              "randomcov.covutil"
               "randomcov.benchmarkingutil"
               ],
     test_suite='pytest',
