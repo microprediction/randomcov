@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.linalg import sqrtm, inv, fractional_matrix_power
+from randomcov.covutil.nearestposdef import nearest_positive_def
 
 
 def geodesic_interpolation(start_cov, end_cov, gamma):
@@ -15,6 +16,8 @@ def geodesic_interpolation(start_cov, end_cov, gamma):
     - interpolated_cov: The interpolated SPD matrix at parameter gamma.
     """
     # Ensure the matrices are symmetric positive-definite
+    start_cov = nearest_positive_def(start_cov)
+
     assert np.allclose(start_cov, start_cov.T), "start_cov must be symmetric."
     assert np.allclose(end_cov, end_cov.T), "end_cov must be symmetric."
     eigvals_start = np.linalg.eigvalsh(start_cov)

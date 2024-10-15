@@ -44,7 +44,9 @@ def min_var_leaderboard(n:int,
         3. Minimum Covariance Determinant (robust)
         """
         # Sample covariance method
-        sample_cov = np.cov(data, rowvar=False)
+        from randomcov.covutil.nearestposdef import nearest_positive_def
+        sample_cov =  nearest_positive_def( np.cov(data, rowvar=False))
+
 
         from randomcov.covutil.geodesicinterpolation import geodesic_interpolation_towards_perfect
         towards_perfect_cov = geodesic_interpolation_towards_perfect(sample_cov,gamma=0.5)
