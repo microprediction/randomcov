@@ -127,9 +127,9 @@ def update_leaderboard(variances: dict, iteration: int):
 if __name__=='__main__':
     using_precise = False
     try:
-        from precise.skaters.portfoliostatic.weakport import weak_long_port
-        from precise.skaters.portfoliostatic.unitport import unit_port
-        from precise.skaters.portfoliostatic.diagport import diag_long_port
+        from precise.skaters.portfoliostatic.weakport import weak_long_port       # A long only portfolio
+        from precise.skaters.portfoliostatic.unitport import unit_port            # The long/short min-var portfolio
+        from precise.skaters.portfoliostatic.diagport import diag_long_port       # Ignore off-diagonal entries
         using_precise = True
     except ImportError:
         print('pip install precise')
