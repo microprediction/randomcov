@@ -2,7 +2,7 @@ import numpy as np
 from scipy.stats import beta, norm
 
 
-def lkj_corr(n, eta=0.5):
+def lkj_corr(n, eta=1.0):
     """
     Generates a random correlation matrix using the LKJ prior.
     https://en.wikipedia.org/wiki/Lewandowski-Kurowicka-Joe_distribution
