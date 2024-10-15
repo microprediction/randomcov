@@ -46,6 +46,9 @@ def min_var_leaderboard(n:int,
         # Sample covariance method
         sample_cov = np.cov(data, rowvar=False)
 
+        from randomcov.covutil.geodesicinterpolation import geodesic_interpolation_towards_perfect
+        towards_perfect_cov = geodesic_interpolation_towards_perfect(sample_cov,gamma=0.5)
+
         # Ledoit-Wolf shrinkage method
         lw = LedoitWolf()
         lw_cov = lw.fit(data).covariance_
@@ -57,7 +60,8 @@ def min_var_leaderboard(n:int,
         return {
             'sample': sample_cov,
             'lw': lw_cov,
-            'mcd': mcd_cov
+            'mcd': mcd_cov,
+            'perfect':towards_perfect_cov
         }
 
     def compute_portfolio_variance(w: np.ndarray, true_corr_matrix: np.ndarray) -> float:
@@ -81,7 +85,7 @@ def min_var_leaderboard(n:int,
 
             # Step 3: Estimate correlation matrices from the simulated data
             estimates = estimate_covariance(data)
-            for shrinkage_method in ['sample','lw','mcd']:
+            for shrinkage_method in list(estimates.keys()):
                 cov_est = estimates[shrinkage_method]
 
                 # Step 4: Evaluate each portfolio method
