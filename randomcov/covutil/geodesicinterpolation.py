@@ -1,10 +1,8 @@
 import numpy as np
 from scipy.linalg import sqrtm, inv, fractional_matrix_power
 from randomcov.covutil.nearestposdef import nearest_positive_def
-
-
-import numpy as np
 from scipy.linalg import eigh
+
 
 def geodesic_interpolation(start_cov, end_cov, gamma):
     """
