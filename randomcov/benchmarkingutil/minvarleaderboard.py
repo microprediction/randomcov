@@ -4,6 +4,8 @@ import numpy as np
 import warnings
 from collections import defaultdict
 from randomcov.randomcovariancematrix import random_covariance_matrix
+from randomcov.covutil.geodesicinterpolation import geodesic_interpolation_towards_perfect
+from randomcov.covutil.nearestposdef import nearest_positive_def
 
 
 warnings.filterwarnings("ignore", message=".*covariance matrix associated to your dataset is not full rank.*")
@@ -44,12 +46,9 @@ def min_var_leaderboard(n:int,
         3. Minimum Covariance Determinant (robust)
         """
         # Sample covariance method
-        from randomcov.covutil.nearestposdef import nearest_positive_def
-        sample_cov =  nearest_positive_def( np.cov(data, rowvar=False))
+        sample_cov =  np.cov(data, rowvar=False)
 
-
-        from randomcov.covutil.geodesicinterpolation import geodesic_interpolation_towards_perfect
-        towards_perfect_cov = geodesic_interpolation_towards_perfect(sample_cov,gamma=0.5)
+        towards_perfect_cov = geodesic_interpolation_towards_perfect(sample_cov,gamma=0.25)
 
         # Ledoit-Wolf shrinkage method
         lw = LedoitWolf()

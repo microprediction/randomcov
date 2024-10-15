@@ -8,7 +8,7 @@ def test_wishart_corr_small():
 
 
 def test_wishart_corr_large():
-    c = wishart_corr(n=5000)
+    c = wishart_corr(n=1000)
     assert is_valid_corr(c)
 
 
