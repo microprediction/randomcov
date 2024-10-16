@@ -15,9 +15,9 @@ or for latest
     from randomcov import random_covariance_matrix
     cov = random_covariance_matrix(n=50, corr_method='residuals', var_method='lognormal')
 
-### Goal
+### Motivation
 
-To collect standard and novel correlation and covariance generation methods. 
+To collect standard but also novel correlation and covariance generation methods, in order to better understand when some estimation methods work better than others in different contexts: such as the construction of machine learnign model ensembles, combinations of forecasts, or financial portfolios.  
 
 
 
