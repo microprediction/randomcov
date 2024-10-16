@@ -53,11 +53,11 @@ class World:
         # Compute the correlation matrix of size evolution over time
         return np.corrcoef(self.size_history)
 
-def animal_cov(n):
-  n_animals = 100
-  world = World(n_animals)
-  world.simulate(num_steps=500)
-  return world.compute_correlation_matrix()
+def animals_cov(n):
+      n_animals = 100
+      world = World(n_animals)
+      world.simulate(num_steps=500)
+      return world.compute_correlation_matrix()
 
 if __name__=='__main__:
     cov = animal_cov(n=5)
