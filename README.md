@@ -1,5 +1,5 @@
 # randomcov
-Generating random covariance and correlation matrices
+Generating random covariance and correlation matrices. 
 
 
 ### Install 
@@ -10,13 +10,16 @@ or for latest
 
     pip install git+https://github.com/microprediction/randomcov.git
     
-
 ### Example
 
     from randomcov import random_covariance_matrix
     cov = random_covariance_matrix(n=50, corr_method='residuals', var_method='lognormal')
 
+### Goal
+
+To collect standard and novel correlation and covariance generation methods. 
 
 
 
-Footnote: This project is unrelated to Intech. I just happenned to make a few commits under an old git identity. 
+### Footnote
+This project is unrelated to Intech. I just happenned to make a few commits under an old git identity. 
