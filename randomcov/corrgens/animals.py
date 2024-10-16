@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+# Correlation of sizes of interacting animals that grow when they meet
+
+
 class Animal:
     def __init__(self, world_size):
         # Continuous attributes: position, velocity, size, energy
