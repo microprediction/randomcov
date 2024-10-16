@@ -17,7 +17,7 @@ or for latest
 
 ### Motivation
 
-To collect standard but also novel correlation and covariance generation methods, in order to better understand when some estimation methods work better than others in different contexts: such as the construction of machine learnign model ensembles, combinations of forecasts, or financial portfolios.  
+To collect standard but also novel correlation and covariance generation methods, in order to better understand when some estimation methods work better than others in different contexts: such as the construction of machine learning model ensembles, combinations of forecasts, or financial portfolios.  
 
 
 
