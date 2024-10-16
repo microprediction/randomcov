@@ -125,9 +125,18 @@ def update_leaderboard(variances: dict, iteration: int):
 
     # Display the sorted leaderboard
     max_method_name_length = max(len(method) for method in average_variances.keys())
-    for rank, (method, avg_var) in enumerate(sorted_methods, 1):
-        print(f"{rank:<3}. {method:<{max_method_name_length}} : Average Variance = {avg_var:>10.4f}")
+    # Calculate the maximum length for formatting
 
+    max_method_name_length = max(len(method) for method in average_variances.keys())
+
+    # Find the lowest average variance
+    lowest_avg_var = min(avg_var for method, avg_var in sorted_methods)
+
+    # Iterate through the sorted methods and display the relative variance
+    for rank, (method, avg_var) in enumerate(sorted_methods, 1):
+        relative_to_lowest = avg_var / lowest_avg_var
+        print(
+            f"{rank:<3}. {method:<{max_method_name_length}} : Average Variance = {avg_var:>10.4f} | Relative to lowest = {relative_to_lowest:>4.3f}")
 
 if __name__=='__main__':
     using_precise = False
