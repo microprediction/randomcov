@@ -1,10 +1,8 @@
 import numpy as np
 from scipy.linalg import sqrtm, inv, fractional_matrix_power
 from randomcov.covutil.nearestposdef import nearest_positive_def
-
-
-import numpy as np
 from scipy.linalg import eigh
+
 
 def geodesic_interpolation(start_cov, end_cov, gamma):
     """
@@ -73,23 +71,6 @@ def geodesic_interpolation(start_cov, end_cov, gamma):
     interpolated_cov = (interpolated_cov + interpolated_cov.T) / 2
 
     return interpolated_cov
-
-# Example usage
-if __name__ == "__main__":
-    # Define two SPD matrices
-    start_cov = np.array([[2.0, 0.6],
-                          [0.6, 1.0]])
-
-    end_cov = np.array([[1.0, 0.2],
-                        [0.2, 1.5]])
-
-    gamma = 0.5  # Halfway interpolation
-
-    interpolated_cov = geodesic_interpolation(start_cov, end_cov, gamma)
-
-    print("Start covariance matrix:\n", start_cov)
-    print("\nEnd covariance matrix:\n", end_cov)
-    print(f"\nInterpolated covariance matrix at gamma={gamma}:\n", interpolated_cov)
 
 
 
