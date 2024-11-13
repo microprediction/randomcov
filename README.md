@@ -22,4 +22,4 @@ To collect standard but also novel correlation and covariance generation methods
 
 
 ### Footnote
-This project is unrelated to Intech. I just happenned to make a few commits under an old git identity. 
+This project is not endorsed by Intech (yet). I just happenned to make a few commits under an old git identity by accident. 
