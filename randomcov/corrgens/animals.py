@@ -62,6 +62,3 @@ def animals_corr(n):
       world.simulate(num_steps=500)
       return world.compute_correlation_matrix()
 
-if __name__=='__main__:
-    cov = animal_cov(n=5)
-    print(cov)
