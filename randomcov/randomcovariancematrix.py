@@ -7,9 +7,6 @@ import numpy as np
 #  A covariance generator is usually a combination of a correlation generator and a variance generator
 
 
-
-
-
 def random_covariance_matrix(n, corr_method:str='lkj', var_method:str='lognormal', corr_kwargs:dict=None, var_kwargs:dict=None):
     """
 
