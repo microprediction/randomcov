@@ -13,4 +13,4 @@ def lognormal_var(n, mean=1.0, sigma=0.5):
     Returns:
         np.ndarray: An array of random variances (positive values).
     """
-    return np.random.lognormal(mean=np.log(mean), sigma=sigma, size=n)
+    return np.random.lognormal(mean=mean, sigma=sigma, size=n)

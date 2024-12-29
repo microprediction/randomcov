@@ -3,5 +3,17 @@ from randomcov.corrgens.wishart import wishart_corr
 from randomcov.corrgens.residuals import residuals_corr
 from randomcov.corrgens.walk import walk_corr
 from randomcov.corrgens.animals import animals_corr
+from enum import Enum
 
-CORR_GENERATORS = [lkj_corr, wishart_corr, residuals_corr, walk_corr, animals_corr]
+class CorrMethod(str, Enum):
+    LKJ = "lkj"
+    RESIDUALS = "residuals"
+    WALK = "walk"
+    WISHART = "wishart"
+    ANIMALS = "animals"
+
+CORR_GENERATORS = {CorrMethod.LKJ:lkj_corr,
+                   CorrMethod.WISHART:wishart_corr,
+                   CorrMethod.RESIDUALS:residuals_corr,
+                   CorrMethod.WALK:walk_corr,
+                   CorrMethod.ANIMALS:animals_corr}
