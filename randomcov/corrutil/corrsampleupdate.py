@@ -1,3 +1,4 @@
+# randomdov.corrutil.corrsampleupdate
 import numpy as np
 
 def corr_sample_update(samples: np.ndarray,
