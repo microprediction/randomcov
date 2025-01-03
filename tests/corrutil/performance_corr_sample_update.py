@@ -19,8 +19,8 @@ def generate_qmc_samples_corr(n_samples: int, target_corr) -> "np.ndarray":
 
 
 if __name__ == "__main__":
-    d = 100           # dimension
-    N = 1_000_000    # number of samples
+    d = 200           # dimension
+    N = 2_000_000    # number of samples
     orig_corr = random_correlation_matrix(n=d, corr_method=CorrMethod.LKJ)
     target_corr = corr_walk(initial_correlation_matrix=orig_corr, steps=5, epsilon=0.01)[-1]
 
@@ -50,4 +50,4 @@ if __name__ == "__main__":
     mod_time = time.time() - start_time
     print(f"Time to apply corr_sample_update    : {mod_time:.4f} s")
 
-   
+

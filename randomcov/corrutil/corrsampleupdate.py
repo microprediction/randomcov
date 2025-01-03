@@ -38,6 +38,7 @@ def corr_sample_update(samples: np.ndarray,
     # ---------------------------------------------------------------------
     import time
     st = time.time()
+    st0 = st
 
     if remove_mean:
         col_means = np.mean(samples, axis=0)
@@ -74,7 +75,9 @@ def corr_sample_update(samples: np.ndarray,
     # 3) Regularize the old correlation (ridge)
     # ---------------------------------------------------------------------
     # Add epsilon on the diagonal to help with near-singularity
+    st = time.time()
     sample_corr_reg = sample_corr + regularization * np.eye(d)
+    print(f'eye time {time.time()-st} s')
 
     # ---------------------------------------------------------------------
     # 4) Factor old sample correlation (Cholesky)
@@ -124,6 +127,6 @@ def corr_sample_update(samples: np.ndarray,
     # ---------------------------------------------------------------------
     # Typically for correlation we might keep zero-mean.
     # If needed, re-add the old means or some new means:
-    new_samples = new_samples_centered + 0.0  # or + col_means if you want to restore the original mean
 
-    return new_samples
+    print(f' ... total inside time {time.time()-st0}')
+    return new_samples_centered
