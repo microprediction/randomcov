@@ -18,19 +18,17 @@ def generate_qmc_samples_corr(n_samples: int, target_corr) -> "np.ndarray":
 
 
 
-
-
 if __name__ == "__main__":
-    d = 100        # dimension
-    N = 10_000_000    # number of samples
-    initial_corr = random_correlation_matrix(n=d, corr_method=CorrMethod.LKJ)
-    target_corr = corr_walk(initial_correlation_matrix=initial_corr, steps=5, epsilon=0.01)[-1]
+    d = 100           # dimension
+    N = 1_000_000    # number of samples
+    orig_corr = random_correlation_matrix(n=d, corr_method=CorrMethod.LKJ)
+    target_corr = corr_walk(initial_correlation_matrix=orig_corr, steps=5, epsilon=0.01)[-1]
 
     # -----------------------------------------------------------
     # 1) Time how long to directly generate QMC with the correlation
     # -----------------------------------------------------------
     start_time = time.time()
-    qmc_with_corr = generate_qmc_samples_corr(N, initial_corr)
+    qmc_with_corr = generate_qmc_samples_corr(N, orig_corr)
     direct_qmc_time = time.time() - start_time
     print(f"Time to generate QMC samples with correlation: {direct_qmc_time:.4f} s")
 
@@ -43,14 +41,14 @@ if __name__ == "__main__":
     # or generate raw random samples...
     raw_qmc_samples = np.random.randn(N, d)  # simpler for demonstration
     raw_generation_time = time.time() - start_time
+    print(f"Time to generate raw QMC (or random) samples: {raw_generation_time:.4f} s")
 
     # (B) Now modify them to target_corr
+    print('Applying corr_sample_update...')
     start_time = time.time()
-    modded_samples = corr_sample_update(raw_qmc_samples, target_corr)
+    modded_samples = corr_sample_update(raw_qmc_samples, target_corr, orig_corr, remove_mean=False)
     mod_time = time.time() - start_time
-
-    print(f"Time to generate raw QMC (or random) samples: {raw_generation_time:.4f} s")
-    print(f"Time to apply corr_sample_update instead    : {mod_time:.4f} s")
+    print(f"Time to apply corr_sample_update    : {mod_time:.4f} s")
 
     total_2step_time = raw_generation_time + mod_time
     print(f"Total time (raw generation + correlation fix): {total_2step_time:.4f} s")

@@ -1,8 +1,10 @@
 # randomdov.corrutil.corrsampleupdate
 import numpy as np
+import time
 
 def corr_sample_update(samples: np.ndarray,
                        target_corr: np.ndarray,
+                       original_corr: np.ndarray = None,
                        remove_mean: bool = True,
                        regularization: float = 1e-12) -> np.ndarray:
     """
@@ -34,6 +36,9 @@ def corr_sample_update(samples: np.ndarray,
     # ---------------------------------------------------------------------
     # 1) (Optional) Remove empirical mean
     # ---------------------------------------------------------------------
+    import time
+    st = time.time()
+
     if remove_mean:
         col_means = np.mean(samples, axis=0)
         samples_centered = samples - col_means
@@ -42,18 +47,28 @@ def corr_sample_update(samples: np.ndarray,
         samples_centered = samples
 
     N, d = samples_centered.shape
+    print(f'  ... step 1 {time.time()-st} s')
 
     # ---------------------------------------------------------------------
     # 2) Compute the old sample correlation
     # ---------------------------------------------------------------------
-    # Sample covariance:
-    sample_cov = np.cov(samples_centered, rowvar=False)  # shape (d, d)
 
-    # Convert to correlation by dividing out sqrt of diagonal
-    stds = np.sqrt(np.diag(sample_cov))
-    # Avoid zeros in the diagonal
-    stds = np.where(stds < 1e-15, 1e-15, stds)
-    sample_corr = sample_cov / np.outer(stds, stds)
+
+    if original_corr is None:
+        # Sample covariance:
+        st = time.time()
+        sample_cov = np.cov(samples_centered, rowvar=False)  # shape (d, d)
+        print(f'step 2 (cov) {time.time()-st}')
+
+        # Convert to correlation by dividing out sqrt of diagonal
+        st = time.time()
+        stds = np.sqrt(np.diag(sample_cov))
+        # Avoid zeros in the diagonal
+        stds = np.where(stds < 1e-15, 1e-15, stds)
+        sample_corr = sample_cov / np.outer(stds, stds)
+        print(f'  ... step 2 {time.time()-st}')
+    else:
+        sample_corr = original_corr
 
     # ---------------------------------------------------------------------
     # 3) Regularize the old correlation (ridge)
@@ -64,18 +79,22 @@ def corr_sample_update(samples: np.ndarray,
     # ---------------------------------------------------------------------
     # 4) Factor old sample correlation (Cholesky)
     # ---------------------------------------------------------------------
+    st = time.time()
     try:
         old_sqrt = np.linalg.cholesky(sample_corr_reg)
     except np.linalg.LinAlgError as e:
         raise ValueError("Old sample correlation (regularized) not positive-definite.") from e
+    print(f'... step 4 (chol)  {time.time()-st} s')
 
     # ---------------------------------------------------------------------
     # 5) Factor target_corr (Cholesky)
     # ---------------------------------------------------------------------
+    st = time.time()
     try:
         new_sqrt = np.linalg.cholesky(target_corr)
     except np.linalg.LinAlgError as e:
         raise ValueError("Target correlation not positive-definite.") from e
+    print(f'... step 5 (chol)  {time.time() - st} s')
 
     # ---------------------------------------------------------------------
     # 6) Solve for T = new_sqrt @ inv(old_sqrt) in a stable manner
@@ -85,15 +104,20 @@ def corr_sample_update(samples: np.ndarray,
     # T * old_sqrt = new_sqrt
     # => T^T = old_sqrt^T \ new_sqrt^T  (where "\" denotes solve)
     # => T = ( old_sqrt^T \ new_sqrt^T )^T
+    st = time.time()
     temp = np.linalg.solve(old_sqrt.T, new_sqrt.T)  # shape (d, d)
     T = temp.T  # shape (d, d)
+    print(f'... step 6 (solve) {time.time()-st} s')
 
     # ---------------------------------------------------------------------
     # 7) Apply T to each sample => new_samples = samples_centered @ T^T
     #    Because if x' = T x, and x is row-vector => x' = x T
     #    So for array of shape (N, d), we do: new_samples = samples_centered @ T^T
     # ---------------------------------------------------------------------
+    import time
+    st = time.time()
     new_samples_centered = samples_centered @ T.T
+    print(f'... step 7 (mult) {time.time()-st}s')
 
     # ---------------------------------------------------------------------
     # 8) (Optional) Re-add mean (often 0 if we truly want correlation-only)
