@@ -50,8 +50,4 @@ if __name__ == "__main__":
     mod_time = time.time() - start_time
     print(f"Time to apply corr_sample_update    : {mod_time:.4f} s")
 
-    total_2step_time = raw_generation_time + mod_time
-    print(f"Total time (raw generation + correlation fix): {total_2step_time:.4f} s")
-
-    # Now you have direct_qmc_time (single-step QMC correlation)
-    # vs. total_2step_time (generate raw + fix correlation).
+   
