@@ -1,4 +1,4 @@
-# 🎬 Sexy Geodesic Interpolation Video Generator
+# 🎬 Beautiful Geodesic Interpolation Video Generator
 
 This project creates stunning visualizations of the `geodesic_interpolation_towards_perfect` function from the RandomCov package, showcasing the beautiful mathematics of Riemannian geometry on the manifold of positive definite matrices.
 
@@ -77,8 +77,8 @@ The function implements geodesic interpolation on the manifold of positive defin
 
 ## 📁 Output Files
 
-- `geodesic_interpolation_sexy.gif` - Animated GIF version
-- `geodesic_interpolation_sexy.mp4` - High-quality video version (if using ffmpeg)
+- `geodesic_interpolation_beautiful.gif` - Animated GIF version
+- `geodesic_interpolation_beautiful.mp4` - High-quality video version (if using ffmpeg)
 
 ## 🚨 Troubleshooting
 
@@ -96,7 +96,7 @@ The function implements geodesic interpolation on the manifold of positive defin
 - Use smaller matrices for quicker computation
 - Close other applications to free up memory
 
-## 🎉 Enjoy Your Sexy Math Video!
+## 🎉 Enjoy Your Beautiful Math Video!
 
 The generated visualization will showcase the elegant transformation of covariance matrices along geodesic paths, demonstrating the beauty of differential geometry in action. Perfect for presentations, educational content, or just appreciating the aesthetics of mathematical transformations!
 

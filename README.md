@@ -25,12 +25,12 @@ The geodesic interpolation capabilities enable smooth transformations between co
 
 ## Correlation Inflation
 
-An example of the kinds of things I wish to test against generative models. 
+An example of the kind of thing I wish to test against generative models. 
 
 **[Correlation Inflation: A Working Paper](https://github.com/microprediction/home/blob/main/workingpapers/CorrelationInflation.pdf)**
 
 *The transformation preserves geometric properties while smoothly interpolating towards perfect correlation structure using differential geometry on the manifold of positive definite matrices.*
 
-![Geodesic Interpolation Towards Perfect Correlation](https://github.com/microprediction/randomcov/blob/main/geodesic_interpolation_sexy.gif)
+![Geodesic Interpolation Towards Perfect Correlation](https://github.com/microprediction/randomcov/blob/main/geodesic_interpolation_beautiful.gif)
 
 

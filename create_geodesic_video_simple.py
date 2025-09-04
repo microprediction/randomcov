@@ -158,8 +158,8 @@ def plot_portfolio_weights(ax, weights, title):
     
     return bars
 
-def create_sexy_animation():
-    """Create a sexy animation with beautiful visualizations"""
+def create_beautiful_animation():
+    """Create a beautiful animation with stunning visualizations"""
     # Create figure with sophisticated layout
     fig = plt.figure(figsize=(24, 12))
     
@@ -270,19 +270,19 @@ def create_sexy_animation():
     return anim
 
 if __name__ == "__main__":
-    print("🎬 Creating sexy geodesic interpolation video...")
+    print("🎬 Creating beautiful geodesic interpolation video...")
     print("🚀 Generating advanced animation with 3D visualizations...")
     
-    # Create the sexy animation
-    anim = create_sexy_animation()
+    # Create the beautiful animation
+    anim = create_beautiful_animation()
     
-    print("💾 Saving animation as 'geodesic_interpolation_sexy.gif'...")
+    print("💾 Saving animation as 'geodesic_interpolation_beautiful.gif'...")
     
     # Save the animation as GIF
-    anim.save('geodesic_interpolation_sexy.gif', writer='pillow', fps=5, dpi=100)
+    anim.save('geodesic_interpolation_beautiful.gif', writer='pillow', fps=5, dpi=100)
     
     print("✅ GIF saved successfully!")
-    print("🎉 Your sexy geodesic interpolation animation is ready!")
+    print("🎉 Your beautiful geodesic interpolation animation is ready!")
     print("\n📊 The animation shows:")
     print("   • 2D bar plots of covariance matrices (top row)")
     print("   • Minimum variance portfolio weights (bottom left)")
@@ -293,7 +293,7 @@ if __name__ == "__main__":
     # Display the animation
     print("🎬 Animation created successfully!")
     print("📱 If the animation doesn't display, check the generated GIF file:")
-    print("   - Look for 'geodesic_interpolation_sexy.gif' in the current directory")
+    print("   - Look for 'geodesic_interpolation_beautiful.gif' in the current directory")
     print("   - Open it with any image viewer or web browser")
     
     # Try to display the animation
