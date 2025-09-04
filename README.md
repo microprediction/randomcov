@@ -15,14 +15,6 @@ or for latest
     from randomcov import random_covariance_matrix
     cov = random_covariance_matrix(n=50, corr_method='residuals', var_method='lognormal')
 
-### Advanced Geodesic Interpolation
-
-    from randomcov.covutil.geodesicinterpolation import geodesic_interpolation_towards_perfect
-    
-    # Transform covariance matrix towards perfect correlation
-    interpolated_cov = geodesic_interpolation_towards_perfect(cov, gamma=0.5)
-    
-    # gamma=0: original matrix, gamma=1: perfect correlation matrix
 
 ### Motivation
 
@@ -38,5 +30,7 @@ An example of the kinds of things I wish to test against generative models.
 **[Correlation Inflation: A Working Paper](https://github.com/microprediction/home/blob/main/workingpapers/CorrelationInflation.pdf)**
 
 *The transformation preserves geometric properties while smoothly interpolating towards perfect correlation structure using differential geometry on the manifold of positive definite matrices.*
+
+![Geodesic Interpolation Towards Perfect Correlation](https://github.com/microprediction/randomcov/blob/main/geodesic_interpolation_sexy.gif)
 
 
