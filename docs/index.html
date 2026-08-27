@@ -28,11 +28,31 @@
   </style>
 </head>
 <body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="/">randomcov</a>
+      <nav>
+        <a href="/">Home</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#generators">Generators</a>
+        <a href="https://github.com/microprediction/randomcov">GitHub</a>
+        <a href="https://pypi.org/project/randomcov/">PyPI</a>
+        <a href="https://winning.microprediction.org/">winning</a>
+      </nav>
+    </div>
+  </header>
 <main>
   <h1>randomcov</h1>
-  <p class="lead">Named random correlation and covariance ensembles for stress-testing
-  estimators, portfolio constructions and probabilistic models.
-  Fifteen literature-grounded generators — seeded, tested, one line each.</p>
+  <p class="subtitle">Named random correlation and covariance ensembles for
+  stress-testing estimators, portfolio constructions and probabilistic models.</p>
+  <p class="lead">Fifteen literature-grounded generators — seeded, tested,
+  one line each. Name the measure, or the claim means nothing.</p>
+  <div class="tag-row">
+    <span class="tag">15 named ensembles</span>
+    <span class="tag">seeded &amp; reproducible</span>
+    <span class="tag">LKJ &middot; vines &middot; spectra &middot; graphs</span>
+    <span class="tag">PSD-validated</span>
+  </div>
 
   <pre><code>pip install randomcov
 
@@ -52,7 +72,7 @@ S = random_covariance_matrix(n=50, corr_method="hierarchical", var_method="logno
   claims can read: <em>under LKJ: X; under a spiked spectrum: Y; under a sparse
   graphical model: Z</em> — each row reproducible from a seed.</p>
 
-  <h2>Gallery</h2>
+  <h2 id="gallery">Gallery</h2>
   <p>One draw per generator ($n=60$, seed 7, rows seriated for legibility).</p>
   <div class="gallery">
     <a href="#lkj"><img src="assets/lkj.png" alt="lkj"><div class="cap">lkj</div></a>
@@ -72,7 +92,7 @@ S = random_covariance_matrix(n=50, corr_method="hierarchical", var_method="logno
     <a href="#animals"><img src="assets/animals.png" alt="animals"><div class="cap">animals</div></a>
   </div>
 
-  <h2>Generators</h2>
+  <h2 id="generators">Generators</h2>
 
   <div class="method" id="lkj">
     <h3>lkj</h3>
