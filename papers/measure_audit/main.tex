@@ -3,6 +3,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{graphicx}
+\usepackage{natbib}
 \usepackage[hidelinks]{hyperref}
 % run-in headings italic, not bold (house style)
 \makeatletter
@@ -37,7 +38,9 @@ structural reasons. The results assemble into a matrix of claims against
 measures whose outlined cells mark the structure each claim was
 demonstrated on or intended for. The \texttt{randomcov} library names the
 measures and seeds the draws, so a published claim can be re-run under all
-fifteen and its verdict reported per measure. Eleven audits are completed
+fifteen and its verdict reported per measure. A joint leaderboard of the
+scikit-learn and \texttt{precise} covariance estimators has five different
+winners across the fifteen ensembles. Eleven audits are completed
 here; a docket of candidates from astronomy, genomics, neuroscience, and
 chemometrics, including provably ensemble-invariant claims that serve as
 null controls, is assembled for the rest.
@@ -60,16 +63,48 @@ locality, and different factor content. A verdict certified under one law
 carries no warrant under another. The measurements below show that the
 omission is not a technicality.
 
+\section{Precedents}
+
+That method comparisons inherit their verdicts from the simulation design
+is established in several literatures. \citet{morris2019} require
+simulation studies to declare the data-generating mechanism as a design
+choice of equal rank with the estimand. \citet{boulesteix2013} trace the
+over-optimism of self-reported comparisons to test beds chosen by the
+method's own authors. \citet{niessl2022} re-analyze one benchmark under
+hundreds of design and analysis options and find that almost any method
+can reach almost any rank. \citet{hooker1995} made the complaint for
+heuristics; \citet{wolpert1997} give the limit statement, that averaged
+over all objectives all optimizers tie.
+
+The correlation-matrix version also has precedent. \citet{joe2006} and
+\citet{lkj2009} supply the standard samplers. \citet{hardin2013} argue
+that the habitual generators produce unrealistic matrices and bias the
+evaluation of statistical techniques, and propose a better one.
+\citet{marti2020} learns a generator from financial correlation matrices
+and reports, in accompanying experiments, that the HRP advantage fades on
+matrices without hierarchical structure.\footnote{\texttt{gmarti.gitlab.io/qfin/2019/12/04/hierarchical-risk-parity-part-3.html}}
+\citet{papenbrock2021} evolve synthetic correlations to ask which market
+regimes favor which allocator. \citet{alvarez2014} document the Bayesian
+mirror image: posterior conclusions about a covariance track the prior
+family placed on it.
+
+The present paper adds the instrument and the audits: a fixed battery of
+fifteen named, seeded, public measures; the re-execution of eleven
+published claims from eleven fields under all of them; the
+claims-by-measures matrix as the reporting format; and provably invariant
+theorems run as null controls.
+
 \section{Fifteen named ensembles}
 
 \texttt{randomcov} generates correlation matrices under named, seeded
-measures: \texttt{lkj}, \texttt{onion}, \texttt{vine} (elliptope
-samplers); \texttt{wishart}, \texttt{spectrum} (spectral laws, including
+measures: \texttt{lkj}, \texttt{onion}, \texttt{vine} (elliptope samplers;
+\citealp{joe2006,lkj2009}); \texttt{wishart}, \texttt{spectrum} (spectral laws, including
 Marchenko--Pastur and spiked); \texttt{factor}, \texttt{hierarchical},
 \texttt{block\_equicorr} (low-rank and clustered structure); \texttt{ar1},
 \texttt{kernel} (banded and locality-driven fields);
 \texttt{sparse\_precision} (graphical-model structure);
-\texttt{archakov\_hansen} (log-matrix parameterization);
+\texttt{archakov\_hansen} (log-matrix parameterization;
+\citealp{archakov2021});
 \texttt{residuals}, \texttt{walk}, \texttt{animals} (empirical-flavored
 and trajectory ensembles).
 
@@ -79,7 +114,8 @@ in this paper descends from one. The scripts sit beside the paper.
 
 \section{Demonstration: one estimator, twelve-fold spread}
 
-The Ledoit--Wolf shrinkage intensity is a workhorse diagnostic: how far
+The Ledoit--Wolf shrinkage intensity \citep{ledoit2004} is a workhorse
+diagnostic: how far
 the sample covariance is pulled toward its target. Fix $n=30$ variables,
 $T=60$ observations, twenty replications, and vary only the generating
 ensemble.
@@ -143,7 +179,7 @@ correlation structure it was demonstrated on or intended for. All runs
 use $n=30$ with twenty replications unless stated; sampled panels use
 $T=60$ except where the claim's own regime dictates otherwise.
 
-\paragraph{Finance.} L\'opez de Prado (2016) reports that hierarchical
+\paragraph{Finance.} \citet{lopezdeprado2016} reports that hierarchical
 risk parity delivers lower out-of-sample variance than quadratic minimum
 variance, and names estimation error in the inverse as the culprit. We
 build both portfolios from the same sample covariance and score the true
@@ -159,7 +195,7 @@ minimum variance the losses grow by many more orders of magnitude: under
 \texttt{walk} the median ratio is $\sim\!10^{8.7}$, because near-singular
 ensembles admit near-perfect hedges that only signed weights reach.
 
-\paragraph{Econophysics.} Laloux et al.\ (1999) flatten the eigenvalues
+\paragraph{Econophysics.} \citet{laloux1999} flatten the eigenvalues
 of the sample correlation that fall below the Marchenko--Pastur edge
 $(1+\sqrt{n/T})^{2}$ and report a cleaner matrix. Column~2 gives the
 Frobenius-loss ratio of clipped to raw sample correlation. Cleaning is
@@ -171,7 +207,7 @@ $1.43$--$1.47$, under \texttt{animals}, \texttt{residuals},
 mass lives below the edge and is erased as noise. The recipe presumes signal
 means spikes; locality puts signal in the bulk.
 
-\paragraph{Geostatistics.} The screening effect of Stein (2002) says
+\paragraph{Geostatistics.} The screening effect of \citet{stein2002} says
 that a few nearest neighbors, here the most correlated, nearly attain the
 full kriging variance. This is a population property, so no sampling is
 involved. Column~3 reports the median ratio of conditional variance given
@@ -185,13 +221,12 @@ interpolation is nearly deterministic from all sites but not from five.
 Stein's own caveat, that screening depends on smoothness, reappears
 inside the one ensemble geostatistics would call home.
 
-\paragraph{Psychometrics.} Horn (1965) retains the components whose
+\paragraph{Psychometrics.} \citet{horn1965} retains the components whose
 sample eigenvalues exceed the corresponding 95th-percentile eigenvalue of
 independent data of the same shape; parallel analysis is the standard
 answer to ``how many factors?'' Column~4 gives the mean retained count:
 $1.8$ under \texttt{sparse\_precision} to $7.3$ under \texttt{onion} at
-identical $(n,T)$. The same sweep scores the Kaiser (1960)
-eigenvalue-greater-than-one rule against the population count of
+identical $(n,T)$. The same sweep scores the eigenvalue-greater-than-one rule of \citet{kaiser1960} against the population count of
 eigenvalues above one. Kaiser over-extracts under \texttt{factor} ($5.7$
 retained against $3.0$ true), under-extracts under \texttt{wishart}
 ($11.2$ against $13.1$), and disagrees with parallel analysis by a factor
@@ -201,9 +236,8 @@ is, in part, a property of the generating measure its data resemble.
 
 \paragraph{Data assimilation.} Ensemble Kalman filtering runs
 member-starved, and the standard repair is covariance localization:
-taper the sample covariance entrywise with a Gaspari--Cohn function of
-inter-variable distance (Houtekamer and Mitchell, 2001; Hamill et al.,
-2001). Paz and S\'anchez (2015) arrived at the same recipe for
+taper the sample covariance entrywise with a Gaspari--Cohn function \citep{gaspari1999} of inter-variable distance
+\citep{houtekamer2001,hamill2001}. \citet{paz2015} arrived at the same recipe for
 correlation-function bins as covariance tapering, so this audit serves
 two literatures at once. With $N=20$ members for $n=30$ variables and a
 taper of index distance with half-radius $6$, column~5 reports the
@@ -220,7 +254,7 @@ coordinates the taper can see.
 
 \paragraph{Signal processing.} Diagonal loading is the standard repair
 for the sample-covariance MVDR beamformer in the snapshot-limited regime
-(Cox, Zeskind and Owen, 1987; Carlson, 1988). With $T=40$ snapshots, a
+\citep{cox1987,carlson1988}. With $T=40$ snapshots, a
 random unit steering vector, the distortionless constraint, and loading
 $\delta=0.1\,\mathrm{tr}(\hat\Sigma)/n$, column~6 reports the median
 ratio of true output power, loaded over unloaded. Loading halves the
@@ -231,12 +265,11 @@ is the hedge from the finance audit seen from the other side: under
 near-singular ensembles the beamformer's null-steering lives in the
 smallest eigenvalues, which is exactly what loading erases.
 
-\paragraph{Graphical modeling.} Friedman, Hastie and Tibshirani (2008)
-attach to the graphical lasso the promise that a sparsity prior on the
+\paragraph{Graphical modeling.} \citet{friedman2008} attach to the graphical lasso the promise that a sparsity prior on the
 precision matrix improves estimation. The same promise underwrites
-gene-network inference (Sch\"afer and Strimmer, 2005),
-partial-correlation connectomes (Smith et al., 2011), and sparse
-cosmological precision matrices (Padmanabhan et al., 2016). Column~7
+gene-network inference \citep{schafer2005}, partial-correlation
+connectomes \citep{smith2011}, and sparse cosmological precision matrices
+\citep{padmanabhan2016}. Column~7
 reports the Frobenius loss of the cross-validated glasso precision
 against the true precision, relative to inverting a Ledoit--Wolf
 shrinkage estimate. The sparsity prior wins clearly where precisions are
@@ -289,17 +322,22 @@ column's verdict flips across rows.}\label{tab:audits}
 \end{table}
 
 A smaller companion audit: with oracle shrinkage intensities, the
-constant-correlation target of Ledoit--Wolf (2003) beats their (2004)
-scaled-identity target on every draw under \texttt{sparse\_precision}
+constant-correlation target of \citet{ledoit2003} beats their
+scaled-identity target \citep{ledoit2004} on every draw under \texttt{sparse\_precision}
 (median loss ratio $0.62$) and loses on nineteen of twenty draws under
 \texttt{residuals}. Even the choice between two targets from the same
 authors is ensemble-relative.
+
+A regime check guards against the $T=2n$ coincidence: at $T=120$ the
+intensity spread persists ($0.04$ to $0.84$) and clipping still helps
+only \texttt{sparse\_precision} and \texttt{hierarchical} (script beside
+the paper).
 
 The remaining four audits concern inference: tests, certification rules,
 and reported dimensions. Their currency is rates and counts rather than
 loss ratios (Table~\ref{tab:rates}).
 
-\paragraph{Evolutionary biology.} Cheverud (1996) declares two genetic
+\paragraph{Evolutionary biology.} \citet{cheverud1996} declares two genetic
 covariance matrices similar when their mean response-vector correlation
 under common random selection gradients exceeds the null for independent
 random vectors. We apply the test to independent pairs drawn from the
@@ -310,10 +348,10 @@ under \texttt{residuals}, \texttt{factor}, and \texttt{archakov\_hansen}
 under eleven of the fifteen ensembles. Under \texttt{sparse\_precision}
 the mean skewers correlation between independent matrices is $0.97$,
 because near-diagonal matrices respond to any skewer with the skewer
-itself. Rohlf (2017) raised this objection in general terms; the
+itself. \citet{rohlf2017} raised this objection in general terms; the
 ensembles make it quantitative.
 
-\paragraph{Climatology.} North et al.\ (1982) declare a leading EOF
+\paragraph{Climatology.} \citet{north1982} declare a leading EOF
 trustworthy when its eigenvalue sampling error $\lambda\sqrt{2/T}$ is
 smaller than the gap to the next eigenvalue. We score the
 false-reassurance rate: among draws the rule declares separated, how
@@ -325,8 +363,8 @@ draws but is always wrong when it does. The rule is a first-order
 perturbation statement: excellent for spiked spectra, unreliable exactly
 where spectra are quasi-degenerate, and silent about which case obtains.
 
-\paragraph{Ecology.} Guillot and Rousset (2013) report that the Mantel
-test rejects independence between distance matrices at $25$--$55\%$ under
+\paragraph{Ecology.} \citet{guillot2013} report that the Mantel test
+\citep{mantel1967} rejects independence between distance matrices at $25$--$55\%$ under
 spatially autocorrelated fields, at nominal $5\%$. Our audit puts the
 original claim and the critique on the same footing: two independent site
 variables drawn with covariance $C$, Euclidean distance matrices, $499$
@@ -338,7 +376,7 @@ locality-and-factor structure and shows calibration under dense elliptope
 measures. Neither ``the Mantel test is broken'' nor ``the Mantel test is
 fine'' is an ensemble-free sentence.
 
-\paragraph{Quantitative genetics.} Kirkpatrick (2009) reports effective
+\paragraph{Quantitative genetics.} \citet{kirkpatrick2009} reports effective
 dimension counts $n_D=\sum_i\lambda_i/\lambda_{\max}$ of roughly one to
 two for published genetic covariance matrices, read as evolutionary
 constraint. At the low precision typical of breeding designs, $T=15$
@@ -397,11 +435,38 @@ claim's home turf, the correlation structure it was demonstrated on or
 intended for.}\label{fig:matrix}
 \end{figure}
 
+\section{One leaderboard per measure}
+
+The audits test one claim at a time; the same harness ranks whole
+libraries. We fit the six covariance estimators of scikit-learn and the
+eleven batch-applicable estimators of \texttt{precise} to the same twenty
+seeded panels per ensemble and rank them by median relative Frobenius
+loss against the generating covariance (Figure~\ref{fig:ranking}). Five
+estimators take first place somewhere: Ledoit--Wolf on four ensembles,
+OAS and fixed shrinkage and the graphical lasso on three each, and the
+raw sample covariance on \texttt{animals} and \texttt{kernel}, the two
+ensembles the intensity table already marked as wanting almost no
+shrinkage. The graphical lasso is first on the three
+precision-structured rows and tenth or worse under \texttt{animals},
+\texttt{residuals}, and \texttt{factor}. The \texttt{precise}
+estimators are built for time-varying covariance and pay for that design
+on static panels, filling the lower ranks. A library default is a bet on
+a measure.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{ranking.pdf}
+\caption{The leaderboard matrix: seventeen covariance estimators, six
+from scikit-learn and eleven from \texttt{precise}, ranked within each
+generating ensemble by median relative Frobenius loss at $n=30$, $T=60$,
+twenty seeded draws per ensemble. Rank-one cells are outlined; columns
+are ordered by mean rank.}\label{fig:ranking}
+\end{figure}
+
 \section{Scope}
 
 The audits measure the ensemble-sensitivity of a claim, not the care of
-its authors. Stein proved that screening depends on smoothness; Bickel
-and Levina state the bandable class their banding rates require;
+its authors. Stein proved that screening depends on smoothness; \citet{bickel2008} state the bandable class their banding rates require;
 L\'opez de Prado demonstrated HRP on equity covariances and said so; the
 data-assimilation literature has always tied localization to physical
 distance. Where a paper states its generating law, the audit maps the
@@ -433,34 +498,36 @@ teaches a taxonomy. Claims that impose structure on the truth are
 ensemble-relative; theorems about Wishart sampling noise hold for every
 true covariance and cannot flip.
 
-The structural claims are the audit targets. Paz and S\'anchez (2015)
-taper clustering-statistic covariances and presume banded truth;
-Padmanabhan et al.\ (2016) estimate sparse cosmological precisions and
-presume a sparse graph. Zhang and Horvath (2005) select gene-network
+The structural claims are the audit targets. \citet{paz2015} taper clustering-statistic covariances and presume banded truth;
+\citet{padmanabhan2016} estimate sparse cosmological precisions and
+presume a sparse graph. \citet{zhang2005} select gene-network
 powers by a scale-free-topology criterion that is itself a statement
-about the generating measure of gene correlation matrices. Smith et al.\
-(2011) demonstrated the win of partial over full correlation for network
-detection on sparse simulated networks. Norberg et al.\ (2009) judged
+about the generating measure of gene correlation matrices. \citet{smith2011} demonstrated the win of partial over full correlation for network
+detection on sparse simulated networks. \citet{norberg2009} judged
 jackknife covariances for galaxy surveys, and the verdict hinges on
 cross-region correlation structure.
 
-A second strand turns on spectral shape. Preisendorfer's Rule~N
-truncates EOFs through the eigenvalue spacing law. Ledoit and Wolf
-(2012) derive the edge of nonlinear over linear shrinkage from spectral
-dispersion; Fan, Liao and Mincheva (2013) build POET on pervasive
-factors plus sparse residuals; Frank and Friedman (1993) show the
+A second strand turns on spectral shape. Rule~N \citep{preisendorfer1988}
+truncates EOFs through the eigenvalue spacing law. \citet{ledoit2012} derive the edge of nonlinear over linear shrinkage from spectral
+dispersion; \citet{fan2013} build POET on pervasive
+factors plus sparse residuals; \citet{frank1993} show the
 PLS-versus-PCR contest turning on how the coefficient vector aligns with
 the predictor eigenstructure. Each carries a predicted flip.
 
-The invariant theorems serve as null controls. Hartlap, Simon and
-Schneider (2007) debias the inverse sample covariance exactly, for every
-true covariance; Dodelson and Schneider (2013) derive a
-parameter-variance inflation that depends only on counts; Sellentin and
-Heavens (2016) marginalize the estimated covariance exactly under
-Wishart sampling; Lowry et al.\ (1992) prove the MEWMA chart depends on
+The invariant theorems serve as null controls. \citet{hartlap2007}
+debias the inverse sample covariance exactly, for every
+true covariance; \citet{dodelson2013} derive a
+parameter-variance inflation that depends only on counts; \citet{sellentin2016} marginalize the estimated covariance exactly under
+Wishart sampling; \citet{lowry1992} prove the MEWMA chart depends on
 a known covariance only through a noncentrality parameter. An audit
-pipeline that finds ensemble-dependence in the Hartlap factor has a bug.
-The most instructive failures are invariant theorems wrapped in
+pipeline that finds ensemble-dependence in the Hartlap factor has a bug,
+so we ran that control: with one fixed covariance per ensemble and four
+hundred panels at $(n,T)=(30,60)$, the trace of the raw average inverse
+sample covariance overshoots the true inverse trace by a factor of
+$2.07$ to $2.13$ under every ensemble, against the Wishart factor
+$(T-1)/(T-n-2)=2.11$, and the corrected ratio is $0.98$ to $1.01$
+everywhere. The pipeline reports no ensemble-dependence where none can
+exist. The most instructive failures are invariant theorems wrapped in
 ensemble-relative plug-in practice, as when those corrections are
 applied to shrunk or tapered estimates whose distribution is no longer
 Wishart.
@@ -470,5 +537,8 @@ ensembles whose structure it assumes, and the matrix draws the borders.
 We leave to future work the remaining docket entries, beginning with the
 Hartlap factor as a pipeline control, the nonlinear-against-linear
 shrinkage comparison, and the WGCNA scale-free criterion.
+
+\bibliographystyle{plainnat}
+\bibliography{refs}
 
 \end{document}

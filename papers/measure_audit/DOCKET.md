@@ -25,9 +25,20 @@ and should be re-verified before quoting. Completed audits live as
 | ecology | Mantel test holds its nominal level | Mantel 1967; Guillot-Rousset 2013 | `mantel_sweep.py` |
 | quantitative genetics | estimated G has ~1-2 effective dimensions | Kirkpatrick 2009 | `gdim_sweep.py` |
 
+Also complete: the Hartlap null control (`hartlap_sweep.py` — corrected
+ratio 0.98-1.01 under every ensemble, pipeline validated), the T=120
+regime check (`robustness_sweep.py`), and the seventeen-estimator
+leaderboard over scikit-learn and precise (`ranking_sweep.py` ->
+`ranking_results.json`, figure via `ranking_matrix.py`; five distinct
+winners across the fifteen ensembles).
+
 The full results assemble into the audit matrix (`audit_matrix.py` ->
 `matrix.pdf`/`matrix.png`): claims x ensembles, colored by verdict, with
-home-turf cells outlined.
+home-turf cells outlined. Related work now lives in the paper's
+Precedents section (Morris et al. 2019; Boulesteix et al. 2013; Niessl
+et al. 2022; Hooker 1995; Wolpert-Macready 1997; Hardin et al. 2013;
+Marti 2020 CorrGAN, whose HRP experiments anticipated one audit;
+Papenbrock et al. 2021; Alvarez et al. 2014).
 
 ## Open — ensemble-relative candidates
 
@@ -101,6 +112,7 @@ home-turf cells outlined.
 ## Null controls — ensemble-invariant theorems (audit pipeline sanity checks)
 - **Hartlap-Simon-Schneider 2007** debiasing factor: exact inverse-Wishart
   identity, holds for every true C. Finding ensemble-dependence = bug.
+  DONE: `hartlap_sweep.py` confirms invariance.
 - **Dodelson-Schneider 2013** inflation formula (see above).
 - **Sellentin-Heavens 2016** t-likelihood (invariant for Wishart estimates;
   relative when fed shrunk/tapered estimates).
