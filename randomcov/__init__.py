@@ -1,3 +1,14 @@
+from randomcov.corrgens.allcorrgens import CORR_GENERATORS, CorrMethod
+from randomcov.corrgens.onion import onion_corr
+from randomcov.corrgens.vine import vine_corr
+from randomcov.corrgens.archakovhansen import archakov_hansen_corr
+from randomcov.corrgens.spectrum import spectrum_corr
+from randomcov.corrgens.factor import factor_corr
+from randomcov.corrgens.hierarchical import hierarchical_corr
+from randomcov.corrgens.blockequi import block_equicorr
+from randomcov.corrgens.ar1 import ar1_corr
+from randomcov.corrgens.kernelcorr import kernel_corr
+from randomcov.corrgens.sparseprecision import sparse_precision_corr
 from randomcov.corrgens.lkj import lkj_corr
 from randomcov.corrgens.wishart import wishart_corr
 from randomcov.corrgens.walk import walk_corr

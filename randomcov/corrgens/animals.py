@@ -16,6 +16,9 @@ class Animal:
         # Random wandering (adding noise to the velocity)
         self.velocity += (np.random.rand(2) - 0.5) * dt
         self.position += self.velocity * dt
+        # metabolic jitter so no animal has constant size (a size that
+        # never changes produced zero-variance rows and NaN correlations)
+        self.size += 0.001 * (np.random.rand() - 0.5)
 
     def interact(self, other, interaction_radius):
         # Check if the other animal is within interaction distance
@@ -55,11 +58,20 @@ class World:
         # Compute the correlation matrix of size evolution over time
         return np.corrcoef(self.size_history)
 
-def animals_corr(n):
-      n_animals = 100
-      world = World(n_animals)
-      world.simulate(num_steps=500)
-      return world.compute_correlation_matrix()
+def animals_corr(n, num_steps=500, rng=None):
+      if rng is not None:
+          np.random.seed(rng if isinstance(rng, int) else None)
+      world = World(n)                     # was hardcoded to 100 animals
+      world.simulate(num_steps=num_steps)
+      C = world.compute_correlation_matrix()
+      C = np.nan_to_num(C, nan=0.0)
+      np.fill_diagonal(C, 1.0)
+      # PSD repair after any nan scrubbing
+      w, U = np.linalg.eigh((C + C.T) / 2.0)
+      C = (U * np.maximum(w, 1e-9)) @ U.T
+      d = np.sqrt(np.diag(C)); C = C / np.outer(d, d)
+      np.fill_diagonal(C, 1.0)
+      return C
 
 
 
