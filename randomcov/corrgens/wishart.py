@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import wishart
 
-def wishart_corr(n):
+def wishart_corr(n, rng=None):
     """
     Generates a correlation matrix using the Wishart distribution.
 
@@ -18,7 +18,8 @@ def wishart_corr(n):
 
     # Step 2: Sample from Wishart distribution
     df = 2*n
-    wishart_sample = wishart.rvs(df=df, scale=scale, size=1)
+    wishart_sample = wishart.rvs(df=df, scale=scale, size=1,
+                                 random_state=np.random.default_rng(rng))
 
     # Step 3: Convert covariance to correlation matrix
     D_inv_sqrt = np.diag(1 / np.sqrt(np.diag(wishart_sample)))

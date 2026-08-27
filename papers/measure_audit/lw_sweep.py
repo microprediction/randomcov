@@ -11,12 +11,13 @@ from sklearn.covariance import LedoitWolf
 
 warnings.filterwarnings("ignore")
 rng = np.random.default_rng(1)
-n, T, reps = 30, 60, 8
+n, T, reps = 30, 60, 20
 rows = []
-for m in CORR_GENERATORS:
+for mi, m in enumerate(CORR_GENERATORS):
     vals = []
     for rep in range(reps):
-        C = np.asarray(random_correlation_matrix(n=n, corr_method=m))
+        C = np.asarray(random_correlation_matrix(n=n, corr_method=m,
+                                                  rng=0 + 1000 * mi + rep))
         L = np.linalg.cholesky(C + 1e-10 * np.eye(n))
         X = (L @ rng.standard_normal((n, T))).T
         vals.append(LedoitWolf().fit(X).shrinkage_)

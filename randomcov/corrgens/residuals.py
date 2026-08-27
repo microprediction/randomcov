@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
 
-def residuals_corr(n):
+def residuals_corr(n, rng=None):
     # Use correlation between out of sample model errors
     # 1. Use wishart(m) to general latent_corr for m = int(math.sqrt(n+10))
     # 2. Generate X using latent_corr
@@ -18,20 +18,21 @@ def residuals_corr(n):
     # 6. Compute the correlation between the model prediction errors
 
     # Step 1: Use wishart(m) to generate latent_corr for m = int(math.sqrt(n + 10))
+    rng = np.random.default_rng(rng)
     m = int(math.sqrt(n + 10))
-    latent_corr = wishart_corr(m)
+    latent_corr = wishart_corr(m, rng=rng)
 
     # Step 2: Generate X using latent_corr
     mean_vector = np.zeros(m)
     N = 1000  # Sample size
-    X = np.random.multivariate_normal(mean=mean_vector, cov=latent_corr, size=N)
+    X = rng.multivariate_normal(mean=mean_vector, cov=latent_corr, size=N)
 
     # Step 3: Generate random coefficients (a true linear model y = a0*X0 + a1*X1 + ...)
-    coefficients = np.random.randn(m)
+    coefficients = rng.standard_normal(m)
     y = X @ coefficients  # Compute true y values
 
     # Step 5: Make predictions out of sample (generate more true X)
-    X_test = np.random.multivariate_normal(mean=mean_vector, cov=latent_corr, size=N)
+    X_test = rng.multivariate_normal(mean=mean_vector, cov=latent_corr, size=N)
     y_test = X_test @ coefficients  # Compute true y for test data
 
     residuals = []

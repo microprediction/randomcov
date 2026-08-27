@@ -20,7 +20,8 @@ def random_covariance_matrix(
         corr_method: Union[CorrMethod, str] = CorrMethod.LKJ,
         var_method: Union[VarMethod, str] = VarMethod.LOGNORMAL,
         corr_kwargs: Optional[Dict[str, Any]] = None,
-        var_kwargs: Optional[Dict[str, Any]] = None
+        var_kwargs: Optional[Dict[str, Any]] = None,
+        rng=None
 ) -> np.ndarray:
     """
     Generate a random covariance matrix using specified correlation and variance methods.
@@ -67,17 +68,20 @@ def random_covariance_matrix(
             )
 
     # Generate correlation matrix
+    rng = np.random.default_rng(rng) if rng is not None else None
     corr = random_correlation_matrix(
         n=n,
         corr_method=corr_method,
-        corr_kwargs=corr_kwargs
+        corr_kwargs=corr_kwargs,
+        rng=rng
     )
 
     # Generate variance vector
     vars_vector = random_variance_vector(
         n=n,
         var_method=var_method,
-        var_kwargs=var_kwargs
+        var_kwargs=var_kwargs,
+        rng=rng
     )
 
     # Compute standard deviations (devos)

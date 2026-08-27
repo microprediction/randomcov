@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def lognormal_var(n, mean=1.0, sigma=0.5):
+def lognormal_var(n, mean=1.0, sigma=0.5, rng=None):
     """
     Generates a list of random variances from a log-normal distribution.
 
@@ -13,4 +13,4 @@ def lognormal_var(n, mean=1.0, sigma=0.5):
     Returns:
         np.ndarray: An array of random variances (positive values).
     """
-    return np.random.lognormal(mean=mean, sigma=sigma, size=n)
+    return np.random.default_rng(rng).lognormal(mean=mean, sigma=sigma, size=n)

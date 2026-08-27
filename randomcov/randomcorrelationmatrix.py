@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 def random_correlation_matrix(
     n: int,
     corr_method: Union[CorrMethod, str] = CorrMethod.LKJ,
-    corr_kwargs: Optional[Dict[str, Any]] = None
+    corr_kwargs: Optional[Dict[str, Any]] = None,
+    rng=None
 ) -> np.ndarray:
     """
     Generate a random correlation matrix using the specified method.
@@ -33,6 +34,8 @@ def random_correlation_matrix(
 
     if corr_kwargs is None:
         corr_kwargs = {}
+    if rng is not None:
+        corr_kwargs.setdefault("rng", rng)
 
     # Convert string input to CorrMethod Enum if necessary
     if isinstance(corr_method, str):

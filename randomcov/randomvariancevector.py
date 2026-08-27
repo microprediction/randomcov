@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 def random_variance_vector(
     n: int,
     var_method: Union[VarMethod, str] = VarMethod.LOGNORMAL,
-    var_kwargs: Optional[Dict[str, Any]] = None
+    var_kwargs: Optional[Dict[str, Any]] = None,
+    rng=None
 ) -> np.ndarray:
     """
     Generate a random variance vector using the specified method.
@@ -31,6 +32,8 @@ def random_variance_vector(
     """
     if var_kwargs is None:
         var_kwargs = {}
+    if rng is not None:
+        var_kwargs.setdefault("rng", rng)
 
     # Validate n
     if n < 1:

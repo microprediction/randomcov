@@ -60,7 +60,9 @@ class World:
 
 def animals_corr(n, num_steps=500, rng=None):
       if rng is not None:
-          np.random.seed(rng if isinstance(rng, int) else None)
+          if rng is not None and not isinstance(rng, int):
+              rng = int(np.random.default_rng(rng).integers(2**31))
+          np.random.seed(rng)
       world = World(n)                     # was hardcoded to 100 animals
       world.simulate(num_steps=num_steps)
       C = world.compute_correlation_matrix()

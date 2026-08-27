@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def unit_var(n):
+def unit_var(n, rng=None):
     """
     Generates a list of unit variances.
 

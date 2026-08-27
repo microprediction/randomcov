@@ -1,8 +1,7 @@
 import numpy as np
-from scipy.stats import beta, norm
 
 
-def lkj_corr(n, eta=1.0):
+def lkj_corr(n, eta=1.0, rng=None):
     """
     Generates a random correlation matrix using the LKJ prior.
     https://en.wikipedia.org/wiki/Lewandowski-Kurowicka-Joe_distribution
@@ -19,12 +18,13 @@ def lkj_corr(n, eta=1.0):
     if eta <= 0:
         raise ValueError("Eta must be greater than 0.")
 
-    L = lkj_cholesky(n, eta)
+    rng = np.random.default_rng(rng)
+    L = lkj_cholesky(n, eta, rng)
     corr_matrix = np.dot(L, L.T)
     return corr_matrix
 
 
-def lkj_cholesky(n, eta):
+def lkj_cholesky(n, eta, rng=None):
     """
     Generates the Cholesky factor of a correlation matrix using the LKJ prior.
 
@@ -35,6 +35,8 @@ def lkj_cholesky(n, eta):
     Returns:
         np.ndarray: The Cholesky factor (lower-triangular matrix) of the correlation matrix.
     """
+    rng = np.random.default_rng(rng)
+
     # Initialize the Cholesky factor
     L = np.zeros((n, n))
 
@@ -44,11 +46,11 @@ def lkj_cholesky(n, eta):
     for i in range(1, n):
         # Sample Beta distributed variable for the diagonal element
         beta_param = eta + 0.5 * (n - i - 1)
-        ui = beta.rvs(a=beta_param, b=beta_param)
+        ui = rng.beta(beta_param, beta_param)
         L[i, i] = np.sqrt(ui)
 
         # Sample from the unit sphere for the off-diagonal elements
-        vi = norm.rvs(size=i)
+        vi = rng.standard_normal(i)
         vi_norm = np.linalg.norm(vi)
         L[i, :i] = vi / vi_norm * np.sqrt(1 - ui)
 
