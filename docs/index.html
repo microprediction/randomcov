@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>randomcov — named random correlation and covariance ensembles</title>
+  <meta name="description" content="Fifteen literature-grounded generators of random correlation and covariance matrices — LKJ, onion, vines, Archakov–Hansen, prescribed spectra, factor, hierarchical, graphical and more — seeded, tested, and named, because 'a random covariance matrix' means nothing until you name the measure." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="randomcov" />
+  <meta property="og:title" content="randomcov — named random correlation ensembles" />
+  <meta property="og:description" content="Fifteen literature-grounded, seeded generators of random correlation matrices. Name the measure or the claim means nothing." />
+  <meta property="og:url" content="https://randomcov.microprediction.org/" />
+  <meta property="og:image" content="https://randomcov.microprediction.org/assets/hierarchical.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <link rel="stylesheet" href="./academic.css" />
+  <style>
+    .gallery { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:14px; margin:1.5rem 0; }
+    .gallery a { text-align:center; text-decoration:none; }
+    .gallery img { width:100%; border-radius:6px; border:1px solid #ddd; }
+    .gallery .cap { font-size:0.82rem; margin-top:4px; font-family:ui-monospace,monospace; }
+    .method { margin:2.2rem 0; }
+    .method h3 { font-family:ui-monospace,monospace; }
+    .sig { font-family:ui-monospace,monospace; font-size:0.9rem; background:#f6f6f4; padding:6px 10px; border-radius:6px; display:inline-block; }
+    .ref { font-size:0.88rem; color:#666; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>randomcov</h1>
+  <p class="lead">Named random correlation and covariance ensembles for stress-testing
+  estimators, portfolio constructions and probabilistic models.
+  Fifteen literature-grounded generators — seeded, tested, one line each.</p>
+
+  <pre><code>pip install randomcov
+
+from randomcov import random_correlation_matrix
+C = random_correlation_matrix(n=50, corr_method="onion", corr_kwargs={"eta": 1.0, "rng": 7})
+
+from randomcov import random_covariance_matrix
+S = random_covariance_matrix(n=50, corr_method="hierarchical", var_method="lognormal")</code></pre>
+
+  <h2>Why named ensembles</h2>
+  <p>There is no canonical “uniform” measure over covariance matrices — scale alone
+  makes the phrase meaningless — and even on the set of correlation matrices (the
+  elliptope) the natural-looking uniform, LKJ with $\eta=1$, concentrates on
+  <em>weak</em> correlations as $n$ grows: every pairwise correlation is
+  $O_p(1/\sqrt{n})$. A method that “works for random covariance matrices” has
+  therefore claimed nothing until the measure is named. This package exists so that
+  claims can read: <em>under LKJ: X; under a spiked spectrum: Y; under a sparse
+  graphical model: Z</em> — each row reproducible from a seed.</p>
+
+  <h2>Gallery</h2>
+  <p>One draw per generator ($n=60$, seed 7, rows seriated for legibility).</p>
+  <div class="gallery">
+    <a href="#lkj"><img src="assets/lkj.png" alt="lkj"><div class="cap">lkj</div></a>
+    <a href="#onion"><img src="assets/onion.png" alt="onion"><div class="cap">onion</div></a>
+    <a href="#vine"><img src="assets/vine.png" alt="vine"><div class="cap">vine</div></a>
+    <a href="#archakov_hansen"><img src="assets/archakov_hansen.png" alt="archakov_hansen"><div class="cap">archakov_hansen</div></a>
+    <a href="#spectrum"><img src="assets/spectrum.png" alt="spectrum"><div class="cap">spectrum</div></a>
+    <a href="#wishart"><img src="assets/wishart.png" alt="wishart"><div class="cap">wishart</div></a>
+    <a href="#residuals"><img src="assets/residuals.png" alt="residuals"><div class="cap">residuals</div></a>
+    <a href="#factor"><img src="assets/factor.png" alt="factor"><div class="cap">factor</div></a>
+    <a href="#hierarchical"><img src="assets/hierarchical.png" alt="hierarchical"><div class="cap">hierarchical</div></a>
+    <a href="#block_equicorr"><img src="assets/block_equicorr.png" alt="block_equicorr"><div class="cap">block_equicorr</div></a>
+    <a href="#ar1"><img src="assets/ar1.png" alt="ar1"><div class="cap">ar1</div></a>
+    <a href="#kernel"><img src="assets/kernel.png" alt="kernel"><div class="cap">kernel</div></a>
+    <a href="#sparse_precision"><img src="assets/sparse_precision.png" alt="sparse_precision"><div class="cap">sparse_precision</div></a>
+    <a href="#walk"><img src="assets/walk.png" alt="walk"><div class="cap">walk</div></a>
+    <a href="#animals"><img src="assets/animals.png" alt="animals"><div class="cap">animals</div></a>
+  </div>
+
+  <h2>Generators</h2>
+
+  <div class="method" id="lkj">
+    <h3>lkj</h3>
+    <p class="sig">lkj_corr(n, eta=1.0)</p>
+    <p>The LKJ density $\propto \det(C)^{\eta-1}$ via the Cholesky-factor
+    construction; $\eta = 1$ is uniform over the elliptope, larger $\eta$
+    concentrates toward the identity.</p>
+    <p class="ref">Lewandowski, Kurowicka &amp; Joe (2009), J. Multivariate Analysis.</p>
+  </div>
+
+  <div class="method" id="onion">
+    <h3>onion</h3>
+    <p class="sig">onion_corr(n, eta=1.0, rng=None)</p>
+    <p>The extended onion method: grow the matrix one variable at a time, the new
+    column’s squared radius drawn $\mathrm{Beta}\!\left(\tfrac{k}{2},\,\beta_k\right)$
+    with a level-dependent parameter — exact LKJ($\eta$) sampling with $O(n^3)$ cost.</p>
+    <p class="ref">Ghosh &amp; Henderson (2003); LKJ (2009).</p>
+  </div>
+
+  <div class="method" id="vine">
+    <h3>vine</h3>
+    <p class="sig">vine_corr(n, eta=1.0, rng=None)</p>
+    <p>C-vine construction: partial correlations sampled as shifted Beta variables
+    with level-dependent parameters, then converted to plain correlations by the
+    vine recursion. Substituting any other law on $(-1,1)$ for the Beta targets any
+    elliptope measure — the most flexible construction in the catalog.</p>
+    <p class="ref">Joe (2006), J. Multivariate Analysis.</p>
+  </div>
+
+  <div class="method" id="archakov_hansen">
+    <h3>archakov_hansen</h3>
+    <p class="sig">archakov_hansen_corr(n, scale=0.6, rng=None)</p>
+    <p>The off-diagonal of $\log C$ is an unconstrained vector (a matrix analogue of
+    Fisher’s $z$): sample it Gaussian, then restore the unit diagonal with the
+    Archakov–Hansen fixed point. A modern route to smooth, dense correlation.</p>
+    <p class="ref">Archakov &amp; Hansen (2021), Econometrica.</p>
+  </div>
+
+  <div class="method" id="spectrum">
+    <h3>spectrum</h3>
+    <p class="sig">spectrum_corr(n, kind="dirichlet" | "exp" | "marchenko_pastur" | "spiked", rng=None)</p>
+    <p>Prescribe the eigenvalues, rotate by a Haar frame, then restore the unit
+    diagonal <em>exactly</em> with Givens rotations, which preserve the spectrum.
+    Kinds: exponential (Bendel–Mickey’s classic), Dirichlet, a Marchenko–Pastur
+    bulk (aspect ratio $q$), or Johnstone’s spiked model (bulk plus a few large
+    eigenvalues — the random-matrix caricature of equity markets).</p>
+    <p class="ref">Bendel &amp; Mickey (1978); Davies &amp; Higham (2000); Johnstone (2001).</p>
+  </div>
+
+  <div class="method" id="wishart">
+    <h3>wishart</h3>
+    <p class="sig">wishart_corr(n, ...)</p>
+    <p>Normalized Wishart: the sample correlation of Gaussian data — the estimation-noise
+    ensemble. Small degrees of freedom give the ill-conditioned regime every shrinkage
+    paper lives in.</p>
+    <p class="ref">Classical.</p>
+  </div>
+
+  <div class="method" id="residuals">
+    <h3>residuals</h3>
+    <p class="sig">residuals_corr(n, ...)</p>
+    <p>Sample correlation of residual-driven paths: strong, near-singular,
+    market-like correlation fields (typical mean $|\rho| \approx 0.4$).</p>
+    <p class="ref">This package.</p>
+  </div>
+
+  <div class="method" id="factor">
+    <h3>factor</h3>
+    <p class="sig">factor_corr(n, k=3, sparse_links=0, link_size=0.3, rng=None)</p>
+    <p>$C = BB' + \mathrm{sparse} + D$: a $k$-factor model with decaying factor
+    strengths, optionally perturbed by sparse off-grammar links — the
+    “approximate factor” world, and the natural test bed for methods that assume
+    low-rank-plus-diagonal structure (including the case where that assumption is
+    slightly wrong).</p>
+    <p class="ref">Approximate-factor literature (Chamberlain–Rothschild; Fan et al.).</p>
+  </div>
+
+  <div class="method" id="hierarchical">
+    <h3>hierarchical</h3>
+    <p class="sig">hierarchical_corr(n, rho_top=0.1, rng=None)</p>
+    <p>Ultrametric (cophenetic) correlation from a random dendrogram: correlation
+    depends only on the first common ancestor, increasing toward the leaves. The
+    class hierarchical risk parity implicitly believes in — and exactly the
+    covariance of a tree of uniform shared effects.</p>
+    <p class="ref">Tumminello, Lillo &amp; Mantegna, hierarchically nested factor models.</p>
+  </div>
+
+  <div class="method" id="block_equicorr">
+    <h3>block_equicorr</h3>
+    <p class="sig">block_equicorr(n, blocks=4, rho_within=None, rho_between=0.1, rng=None)</p>
+    <p>Constant correlation within each block, constant between blocks (validity
+    requires $\rho_\text{between} \le \rho_\text{within}$, checked). The block form
+    of Engle–Kelly’s DECO.</p>
+    <p class="ref">Engle &amp; Kelly (2012), J. Business &amp; Economic Statistics.</p>
+  </div>
+
+  <div class="method" id="ar1">
+    <h3>ar1</h3>
+    <p class="sig">ar1_corr(n, rho=None, rng=None)</p>
+    <p>The Kac–Murdock–Szegő Toeplitz matrix $\rho^{|i-j|}$ — banded decay, the
+    time-series and spatial-line classic, with a known closed-form inverse.</p>
+    <p class="ref">Kac, Murdock &amp; Szegő (1953).</p>
+  </div>
+
+  <div class="method" id="kernel">
+    <h3>kernel</h3>
+    <p class="sig">kernel_corr(n, d=2, length_scale=None, nu="rbf" | "matern32", rng=None)</p>
+    <p>A Gaussian field sampled at $n$ random points in $d$ dimensions with an RBF
+    or Matérn-3/2 kernel: smooth spatial correlation, full rank, geometry-driven.</p>
+    <p class="ref">Spatial statistics / Gaussian-process literature.</p>
+  </div>
+
+  <div class="method" id="sparse_precision">
+    <h3>sparse_precision</h3>
+    <p class="sig">sparse_precision_corr(n, density=0.05, strength=0.4, rng=None)</p>
+    <p>A random sparse <em>precision</em> matrix (Erdős–Rényi conditional-independence
+    graph, diagonally dominant), inverted and normalized: dense correlation with
+    sparse conditional structure — the texture opposite to factor models, and the
+    ensemble on which eigenvalue-based methods deserve to struggle.</p>
+    <p class="ref">Gaussian graphical model literature.</p>
+  </div>
+
+  <div class="method" id="walk">
+    <h3>walk</h3>
+    <p class="sig">walk_corr(n, rho=0.3, steps=5, epsilon=0.1)</p>
+    <p>A perturbation random walk on the elliptope: symmetric noise added to a
+    starting equicorrelation, projected back by nearest-correlation each step.
+    Wanders toward the boundary — near-singular by design.</p>
+    <p class="ref">This package; nearest-correlation per Higham (2002).</p>
+  </div>
+
+  <div class="method" id="animals">
+    <h3>animals</h3>
+    <p class="sig">animals_corr(n, num_steps=500)</p>
+    <p>Emergent correlation from an agent-based simulation: animal sizes grow when
+    animals meet, so spatial proximity becomes correlation. No parametric family —
+    a reminder that the world’s covariances are generated by mechanisms, not measures.</p>
+    <p class="ref">This package.</p>
+  </div>
+
+  <h2>Variances and covariances</h2>
+  <p><code>random_covariance_matrix(n, corr_method=..., var_method="lognormal" | "unit")</code>
+  composes any correlation ensemble with a variance law.
+  <code>geodesic_interpolation_towards_perfect</code> interpolates smoothly between
+  covariance structures along the SPD manifold:</p>
+  <p><img src="assets/geodesic_interpolation_beautiful.gif" alt="geodesic interpolation" style="max-width:100%;border-radius:8px"></p>
+
+  <h2>Links</h2>
+  <p><a href="https://github.com/microprediction/randomcov">GitHub</a> ·
+     <a href="https://pypi.org/project/randomcov/">PyPI</a> ·
+     used by the <a href="https://github.com/microprediction/winning">winning</a>
+     package’s ensemble test batteries.</p>
+</main>
+</body>
+</html>
