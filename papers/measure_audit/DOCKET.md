@@ -20,6 +20,14 @@ and should be re-verified before quoting. Completed audits live as
 | signal processing | diagonal loading robustifies the MVDR beamformer | Cox-Zeskind-Owen 1987; Carlson 1988 | `mvdr_sweep.py` |
 | graphical modeling (+genomics, neuro, cosmology) | sparsity prior beats shrinkage for the precision matrix | Friedman et al. 2008; Schafer-Strimmer 2005; Smith et al. 2011; Padmanabhan et al. 2016 | `glasso_sweep.py` |
 | statistics (minor) | constant-correlation vs identity shrinkage target | Ledoit-Wolf 2003 vs 2004 | `target_sweep.py` |
+| evolutionary biology | random skewers detect matrix similarity | Cheverud 1996; Rohlf 2017 critique | `skewers_sweep.py` |
+| climatology | North's rule certifies EOF separation | North et al. 1982 | `north_sweep.py` |
+| ecology | Mantel test holds its nominal level | Mantel 1967; Guillot-Rousset 2013 | `mantel_sweep.py` |
+| quantitative genetics | estimated G has ~1-2 effective dimensions | Kirkpatrick 2009 | `gdim_sweep.py` |
+
+The full results assemble into the audit matrix (`audit_matrix.py` ->
+`matrix.pdf`/`matrix.png`): claims x ensembles, colored by verdict, with
+home-turf cells outlined.
 
 ## Open — ensemble-relative candidates
 
@@ -39,8 +47,6 @@ and should be re-verified before quoting. Completed audits live as
   ensemble-relative (structured estimators change the requirement).
 
 ### Climate / meteorology / oceanography
-- **North et al. 1982** rule of thumb for EOF separation (~5000 cites). Audit:
-  false-reassurance rate P(eigenvector wrong | declared separated) per ensemble.
 - **Rule N** (Preisendorfer-Mobley 1988; Wilks 2016 repair): retained modes vs
   true dimensionality; over-retention on smooth-spectrum ensembles.
 - **Ribes et al. 2009/2013** regularized optimal fingerprinting: shrinkage vs
@@ -49,14 +55,6 @@ and should be re-verified before quoting. Completed audits live as
   N_eff bias by spectral shape.
 
 ### Ecology / evolution
-- **Cheverud 1996** random skewers: false-similarity rate for independent
-  matrix pairs ranges ~5% to ~100% by ensemble (Rohlf's critique, made precise).
-- **Kirkpatrick 2009** "G has ~2 effective dimensions": n_D-hat/n_D-true under
-  Wishart noise — the famous survey number is reproducible from noise under
-  some measures only.
-- **Guillot-Rousset 2013** "Dismantling the Mantel tests": the reported 25-55%
-  type-I inflation was derived under Matern fields; inflation is
-  ensemble-dependent (neither "broken" nor "fine" is ensemble-free).
 - **Pollock et al. 2014** JSDM residual correlations as species interactions:
   sign-recovery AUC by residual-structure ensemble.
 

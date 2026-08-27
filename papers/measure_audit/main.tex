@@ -2,6 +2,7 @@
 \usepackage[margin=1.15in]{geometry}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
+\usepackage{graphicx}
 \usepackage[hidelinks]{hyperref}
 % run-in headings italic, not bold (house style)
 \makeatletter
@@ -29,23 +30,29 @@ Papers validate estimators, factorizations, and portfolio constructions on
 whatever generator is at hand: a Wishart draw, a uniform LKJ sample, one
 empirical panel. We measure how much this omission can matter. Across
 fifteen named ensembles at identical dimension and sample size, the
-Ledoit--Wolf shrinkage intensity ranges from $0.07$ to $0.86$, and seven
-audited claims from seven fields---hierarchical risk parity beats minimum
+Ledoit--Wolf shrinkage intensity ranges from $0.07$ to $0.86$, and eleven
+audited claims from eleven fields---hierarchical risk parity beats minimum
 variance (finance), Marchenko--Pastur eigenvalue cleaning improves the
 correlation matrix (econophysics), a handful of nearest neighbors suffices
 for kriging (geostatistics), parallel analysis identifies the number of
 factors (psychometrics), covariance localization repairs a member-starved
 ensemble estimate (data assimilation), diagonal loading robustifies the
 Capon beamformer (signal processing), a sparsity prior beats a shrinkage
-prior for the precision matrix (graphical modeling)---each flip verdict as
-the ensemble changes, for stated structural reasons. The \texttt{randomcov}
+prior for the precision matrix (graphical modeling), random skewers detect
+matrix similarity (evolutionary biology), North's rule certifies EOF
+separation (climatology), the Mantel test holds its nominal level
+(ecology), estimated genetic covariance matrices have one or two effective
+dimensions (quantitative genetics)---each flip verdict as the ensemble
+changes, for stated structural reasons. The results assemble into a single
+matrix of claims against measures (Figure~\ref{fig:matrix}) whose outlined
+cells mark each claim's intended home structure. The \texttt{randomcov}
 library names the measures and seeds the draws. The program this enables is
 an audit: re-run published covariance-method claims across the full set of
-named ensembles and report which verdicts survive and which flip. Seven
+named ensembles and report which verdicts survive and which flip. Eleven
 audits are completed here; a docket of prominent candidates from astronomy,
-genomics, neuroscience, ecology, chemometrics, and climatology---including
-claims that are provably ensemble-\emph{invariant} and therefore serve as
-null controls---is assembled for the rest.
+genomics, neuroscience, and chemometrics---including claims that are
+provably ensemble-\emph{invariant} and therefore serve as null
+controls---is assembled for the rest.
 \end{abstract}
 
 \section{The unstated measure}
@@ -133,14 +140,17 @@ purchase. A validation run on any single ensemble would have reported
 either ``essentially exact'' or ``inadequate,'' both correctly, for the
 same method.
 
-\section{Seven audits, seven fields}
+\section{Eleven audits, eleven fields}
 
 The audit protocol is short: take a published claim, re-run its
 demonstration seeded under every named ensemble, report the verdict per
-ensemble, and flag the flips. We audit one claim from each of seven fields.
-All runs use $n=30$ with twenty replications; sampled panels use $T=60$
-except where the claim's own regime dictates otherwise; scripts sit beside
-this paper.
+ensemble, and flag the flips. We audit one claim from each of eleven
+fields: seven claims about estimators and constructions
+(Table~\ref{tab:audits}), then four claims about inference and
+dimensionality (Table~\ref{tab:rates}), with the whole program summarized
+in Figure~\ref{fig:matrix}. All runs use $n=30$ with twenty replications
+unless stated; sampled panels use $T=60$ except where the claim's own
+regime dictates otherwise; scripts sit beside this paper.
 
 \paragraph{Finance.} Hierarchical risk parity is reported to deliver lower
 out-of-sample variance than quadratic minimum variance (L\'opez de Prado,
@@ -290,12 +300,117 @@ Ledoit--Wolf (below one: the sparsity prior wins). Each column's verdict
 flips across rows.}\label{tab:audits}
 \end{table}
 
-An eighth, smaller audit: with oracle shrinkage intensities, the
+A smaller companion audit: with oracle shrinkage intensities, the
 constant-correlation target of Ledoit--Wolf (2003) beats their (2004)
 scaled-identity target on every draw under \texttt{sparse\_precision}
 (median loss ratio $0.62$) and loses on nineteen of twenty draws under
 \texttt{residuals}. Even the choice between two targets from the same
 authors is ensemble-relative.
+
+The remaining four audits concern inference---tests, certification rules,
+and reported dimensions---so their currency is rates and counts rather
+than loss ratios (Table~\ref{tab:rates}).
+
+\paragraph{Evolutionary biology.} Random skewers (Cheverud, 1996) declares
+two genetic covariance matrices similar when their mean response-vector
+correlation under common random selection gradients exceeds the null for
+independent random vectors. We apply the test to \emph{independent} pairs
+drawn from the same ensemble---a population property, no sampling noise
+involved---so a sound test should declare similarity about $5\%$ of the
+time. It does so under \texttt{residuals}, \texttt{factor}, and
+\texttt{archakov\_hansen} ($0\%$), and declares independent matrices
+similar $100\%$ of the time under eleven of the fifteen ensembles; under
+\texttt{sparse\_precision} the mean skewers correlation between
+independent matrices is $0.97$, because near-diagonal matrices respond to
+any skewer with the skewer itself. This is Rohlf's (2017) critique in
+ensemble coordinates: the customary null distribution ignores the
+generating measure entirely.
+
+\paragraph{Climatology.} North et al.'s (1982) rule of thumb declares a
+leading EOF trustworthy when its eigenvalue sampling error
+$\lambda\sqrt{2/T}$ is smaller than the gap to the next eigenvalue. We
+score the false-reassurance rate: among draws the rule declares separated,
+how often the leading sample eigenvector is mostly wrong (squared
+alignment with the truth below one half). The rate is $0\%$ under six
+ensembles, $57\%$ under \texttt{wishart}, and $100\%$ under
+\texttt{sparse\_precision}---which declares separation on only $12\%$ of
+draws, but is always wrong when it does. The rule is a first-order
+perturbation statement, excellent for spiked spectra and unreliable
+precisely where spectra are quasi-degenerate, which no sample quantity it
+inspects can certify.
+
+\paragraph{Ecology.} Guillot and Rousset (2013) reported that the Mantel
+test rejects independence between distance matrices at $25$--$55\%$ under
+spatially autocorrelated fields, at nominal $5\%$. Our audit puts both the
+original claim and the critique on the same footing: two independent site
+variables drawn with covariance $C$, Euclidean distance matrices, $499$
+label permutations. The realized type-I error is the nominal $5\%$ under
+\texttt{onion} and \texttt{vine}, and $37$--$40\%$ under
+\texttt{residuals}, \texttt{factor}, \texttt{kernel}, and
+\texttt{animals}---reproducing the published inflation under
+locality-and-factor structure while showing calibration under dense
+elliptope measures. Neither ``the Mantel test is broken'' nor ``the
+Mantel test is fine'' is an ensemble-free sentence.
+
+\paragraph{Quantitative genetics.} Kirkpatrick's (2009) effective
+dimension count $n_D=\sum_i\lambda_i/\lambda_{\max}$ is reported at
+roughly one to two for published genetic covariance matrices and read as
+evolutionary constraint. At the low precision typical of breeding designs
+($T=15$ here), the estimated $n_D$ deflates the truth by an
+ensemble-dependent factor: a true $n_D$ of $12.3$ under
+\texttt{sparse\_precision} is reported as $5.2$ (ratio $0.42$), while
+\texttt{factor} and \texttt{animals} are honest ($0.90$, $0.89$)---because
+their truth is already low-dimensional. Across all fifteen ensembles the
+estimate never exceeds $5.2$ whatever the truth, so a low reported $n_D$
+cannot by itself distinguish low-dimensional biology from a noisy estimate
+of diffuse structure.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lcccc}
+\toprule
+ & skewers & North rule & Mantel & $n_D$ ratio \\
+ensemble & false sim. & false reass. & type-I & est/true \\
+\midrule
+animals & $10\%$ & $0\%$ & $40\%$ & $0.89$ \\
+ar1 & $100\%$ & $20\%$ & $13\%$ & $0.54$ \\
+archakov\_hansen & $0\%$ & $9\%$ & $28\%$ & $0.78$ \\
+block\_equicorr & $100\%$ & $0\%$ & $15\%$ & $0.77$ \\
+factor & $0\%$ & $0\%$ & $38\%$ & $0.90$ \\
+hierarchical & $100\%$ & $0\%$ & $6\%$ & $0.78$ \\
+kernel & $100\%$ & $3\%$ & $39\%$ & $0.88$ \\
+lkj & $100\%$ & $22\%$ & $11\%$ & $0.58$ \\
+onion & $100\%$ & $33\%$ & $5\%$ & $0.57$ \\
+residuals & $0\%$ & $0\%$ & $37\%$ & $0.79$ \\
+sparse\_precision & $100\%$ & $100\%$ & $7\%$ & $0.42$ \\
+spectrum & $100\%$ & $10\%$ & $9\%$ & $0.52$ \\
+vine & $100\%$ & $33\%$ & $5\%$ & $0.55$ \\
+walk & $100\%$ & $0\%$ & $8\%$ & $0.83$ \\
+wishart & $100\%$ & $57\%$ & $7\%$ & $0.47$ \\
+\bottomrule
+\end{tabular}
+\caption{Four audited inference claims. Column 1: share of
+\emph{independent} matrix pairs that random skewers declares similar
+(sound: $\approx 5\%$). Column 2: among draws North's rule declares
+separated, share whose leading EOF is mostly wrong (squared alignment
+below $\tfrac12$). Column 3: realized type-I error of the Mantel test at
+nominal $5\%$. Column 4: estimated over true effective dimensions of a
+covariance matrix at $T=15$ (honest: near one).}\label{tab:rates}
+\end{table}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{matrix.pdf}
+\caption{The audit matrix: eleven claims (columns, with their fields)
+against fifteen generating ensembles (rows, ordered roughly from
+structured to dense). Green: the claim delivers under that measure;
+yellow: break-even or calibrated; red: the claim backfires or the test is
+broken. Cell entries are the medians and rates of
+Tables~\ref{tab:audits} and~\ref{tab:rates}. Outlined cells mark the
+correlation structure each claim was demonstrated on or intended
+for---its home turf. A claim quoted without its measure is a row of this
+matrix collapsed to a single cell.}\label{fig:matrix}
+\end{figure}
 
 \section{What the audits do not say}
 
@@ -314,17 +429,20 @@ citation.
 
 \section{The docket}
 
-The pattern across Table~\ref{tab:audits} is not random: each field's
+The pattern across Figure~\ref{fig:matrix} is not random: each field's
 signature claim performs best on the ensembles that resemble the data the
-field grew up on, and the table reads like a map of disciplinary home
-turf. \texttt{sparse\_precision} is kind to hierarchical bisection,
-eigenvalue cleaning, localization, and the graphical lasso
-simultaneously; the dense elliptope samplers (\texttt{lkj},
-\texttt{onion}, \texttt{vine}) are kind to almost nothing, which is worth
-knowing given how often they serve as the default test bed; and the same
-mechanism recurs under different names---the hedge that unconstrained
-minimum variance exploits is the null-steering that diagonal loading
-destroys.
+field grew up on, and the matrix reads like a map of disciplinary home
+turf---with instructive exceptions where an outlined cell glows red, as
+when the screening effect fails inside the kernel ensemble, or the taper
+fails on locality it cannot see. \texttt{sparse\_precision} is kind to
+hierarchical bisection, eigenvalue cleaning, localization, and the
+graphical lasso simultaneously, yet breaks random skewers and North's
+rule; the dense elliptope samplers (\texttt{lkj}, \texttt{onion},
+\texttt{vine}) are kind to almost nothing except the Mantel test, which
+is worth knowing given how often they serve as the default test bed; and
+the same mechanism recurs under different names---the hedge that
+unconstrained minimum variance exploits is the null-steering that
+diagonal loading destroys.
 
 A survey of prominent covariance-method claims across further fields
 yields a docket for the next round, and sorting it teaches a taxonomy.
@@ -337,17 +455,12 @@ generating measure of gene correlation matrices; partial correlation's
 celebrated win over full correlation for network detection (Smith et al.,
 2011) was demonstrated on sparse simulated networks; the jackknife
 covariance verdicts of galaxy-survey methodology (Norberg et al., 2009)
-hinge on cross-region correlation structure; North's rule for EOF
-separation (North et al., 1982), Rule N (Preisendorfer), and the Kaiser
-rule audited above govern retained dimensions through the eigenvalue
-spacing law; random-skewers similarity of genetic covariance matrices
-(Cheverud, 1996) and the low effective dimensionality of $G$
-(Kirkpatrick, 2009) load on the spectrum of the generating measure; the
-Mantel test's reported type-I inflation (Guillot and Rousset, 2013) was
-itself derived under Mat\'ern-type fields; nonlinear shrinkage's edge
-over linear (Ledoit and Wolf, 2012), POET's factor-plus-sparse recipe
-(Fan, Liao and Mincheva, 2013), and PLS-versus-PCR (Frank and Friedman,
-1993) all turn on spectral shape and eigenvector structure.
+hinge on cross-region correlation structure; Rule~N truncation
+(Preisendorfer) governs retained dimensions through the eigenvalue
+spacing law; nonlinear shrinkage's edge over linear (Ledoit and Wolf,
+2012), POET's factor-plus-sparse recipe (Fan, Liao and Mincheva, 2013),
+and PLS-versus-PCR (Frank and Friedman, 1993) all turn on spectral shape
+and eigenvector structure.
 
 By contrast, claims that are theorems about Wishart sampling noise hold
 for every true covariance and cannot flip: the Hartlap debiasing factor
