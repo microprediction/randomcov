@@ -1,0 +1,141 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.15in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+% run-in headings italic, not bold (house style)
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}{-1em}%
+  {\normalfont\normalsize\itshape}}
+\makeatother
+
+\title{Covariance-Method Claims Are Ensemble-Relative:\\
+Named Measures and an Audit Program}
+\author{Peter Cotton\thanks{\texttt{peter.cotton@microprediction.com}. The
+ensemble library is \texttt{pip install randomcov}; the seeded scripts behind
+every number here live beside this paper at
+\texttt{github.com/microprediction/randomcov}.}}
+\date{August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A claim about the behavior of a covariance or correlation method is a claim
+about a distribution over matrices, and the distribution is rarely stated.
+Papers validate estimators, factorizations, and portfolio constructions on
+whatever generator is at hand: a Wishart draw, a uniform LKJ sample, one
+empirical panel. We measure how much this omission can matter. Across
+fifteen named ensembles at identical dimension and sample size, the
+Ledoit--Wolf shrinkage intensity ranges from $0.08$ to $0.87$; a probability
+algorithm whose median error is $10^{-5}$ under twelve ensembles degrades by
+two orders of magnitude under kernel-generated fields, for a stated
+structural reason. The \texttt{randomcov} library names the measures and
+seeds the draws. The program this enables is an audit: re-run published
+covariance-method claims across the full set of named ensembles and report
+which verdicts survive and which flip. Two demonstrations are given here;
+the audits are the invitation.
+\end{abstract}
+
+\section{The unstated measure}
+
+Empirical claims about covariance methods have the form ``estimator $A$
+beats estimator $B$,'' ``the shrinkage intensity is typically moderate,''
+``the factorization recovers structure,'' with performance averaged over
+random test matrices. The average is with respect to some generating law,
+and the law is usually inherited from convenience: \texttt{numpy} Wishart
+draws, a uniform LKJ prior, a single equity panel. Different laws produce
+matrices with different spectra, different locality, and different factor
+content, so a verdict certified under one law carries no warrant under
+another. The omission is not a technicality, as the two measurements below
+show.
+
+\section{Fifteen named ensembles}
+
+\texttt{randomcov} generates correlation matrices under named, seeded
+measures: \texttt{lkj}, \texttt{onion}, \texttt{vine} (elliptope samplers);
+\texttt{wishart}, \texttt{spectrum} (spectral laws, including
+Marchenko--Pastur and spiked); \texttt{factor}, \texttt{hierarchical},
+\texttt{block\_equicorr} (low-rank and clustered structure);
+\texttt{ar1}, \texttt{kernel} (banded and locality-driven fields);
+\texttt{sparse\_precision} (graphical-model structure);
+\texttt{archakov\_hansen} (log-matrix parameterization);
+\texttt{residuals}, \texttt{walk}, \texttt{animals} (empirical-flavored and
+trajectory ensembles). Variance vectors are drawn separately, so
+correlation structure and scale can be crossed. Every draw is reproducible
+from a seed, which is what an audit needs.
+
+\section{Demonstration: one estimator, twelve-fold spread}
+
+The Ledoit--Wolf shrinkage intensity is a workhorse diagnostic: how far the
+sample covariance is pulled toward its target. Fix $n=30$ variables, $T=60$
+observations, eight replications, and vary only the generating ensemble.
+
+\begin{center}\small
+\begin{tabular}{lcc}
+\toprule
+ensemble & intensity & sd \\
+\midrule
+animals & $0.075$ & $0.013$ \\
+residuals & $0.095$ & $0.011$ \\
+factor & $0.104$ & $0.013$ \\
+archakov\_hansen & $0.117$ & $0.015$ \\
+kernel & $0.140$ & $0.091$ \\
+walk & $0.195$ & $0.034$ \\
+block\_equicorr & $0.261$ & $0.097$ \\
+vine & $0.344$ & $0.024$ \\
+lkj & $0.352$ & $0.026$ \\
+hierarchical & $0.357$ & $0.074$ \\
+onion & $0.363$ & $0.035$ \\
+ar1 & $0.364$ & $0.250$ \\
+spectrum & $0.471$ & $0.066$ \\
+wishart & $0.528$ & $0.032$ \\
+sparse\_precision & $0.869$ & $0.067$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The intensity spans $0.075$ to $0.869$ at identical $(n,T)$: a paper
+reporting ``typical'' shrinkage from one generator is reporting a property
+of its generator. The ordering is interpretable---strong low-rank structure
+(\texttt{animals}, \texttt{residuals}, \texttt{factor}) wants little
+shrinkage, near-unstructured draws (\texttt{wishart},
+\texttt{sparse\_precision}) want a great deal---and the within-ensemble
+standard deviation is itself informative: \texttt{ar1} spans $0.25$ across
+its own parameter draws, so even a named ensemble can hide a range.
+
+\section{Demonstration: one algorithm, one failing ensemble}
+
+A deterministic algorithm for multinomial probit choice probabilities
+(the \texttt{winning} package; paper in that repository) reports median
+absolute error by ensemble after fitting a structured covariance grammar.
+Under twelve of the fifteen measures the error is
+$1$--$4\times10^{-5}$; under dense-strong ensembles it is
+$1$--$4\times10^{-4}$; under \texttt{kernel} fields (Mat\'ern and RBF) it
+is $4\times10^{-3}$. The failure has a mechanism: kernel covariance is
+locality, approximately Markov, and offers a low-rank factorization no good
+purchase. A validation run on any single ensemble would have reported
+either ``essentially exact'' or ``inadequate,'' both correctly, for the
+same method.
+
+\section{The audit program}
+
+The protocol is short. Take a published claim about a covariance or
+correlation method; identify the generating law under which it was
+demonstrated; re-run the demonstration, seeded, under every named ensemble;
+report the verdict per ensemble; flag the flips and, where possible, the
+mechanism. Candidate claims, in rough order of exposure: shrinkage-target
+and intensity recommendations; hierarchical-risk-parity versus
+minimum-variance horse races; sparse precision recovery guarantees;
+condition-number and regularization benchmarks; correlation-forecast
+comparisons. The two demonstrations above suggest what to expect:
+structure-sensitive methods will flip on structure-heavy ensembles, and
+locality is the ensemble property most likely to defeat spectral intuition.
+
+This is a working paper and a program, not a completed audit: the
+demonstrations are ours, the audits are the invitation, and the library
+exists so that the next paper's claim can be tested across all fifteen
+measures in the time it currently takes to test one.
+
+\end{document}
