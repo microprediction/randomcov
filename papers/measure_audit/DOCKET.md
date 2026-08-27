@@ -32,6 +32,14 @@ leaderboard over scikit-learn and precise (`ranking_sweep.py` ->
 `ranking_results.json`, figure via `ranking_matrix.py`; five distinct
 winners across the fifteen ensembles).
 
+TO RUN ON A BIGGER MACHINE: the regime sweep (`regime_sweep.py`) re-runs
+six audits at T in {15, 30, 60, 120, 240} (T/n from 0.5 to 8) under every
+ensemble — `python papers/measure_audit/regime_sweep.py` (~20-40 min,
+graphical-lasso-dominated; `REPS=1` for a smoke test), then
+`python papers/measure_audit/regime_matrix.py` renders `regime.pdf`/`.png`.
+The code path is smoke-tested; the paper's regime section should be
+written from the full-rep results.
+
 The full results assemble into the audit matrix (`audit_matrix.py` ->
 `matrix.pdf`/`matrix.png`): claims x ensembles, colored by verdict, with
 home-turf cells outlined. Related work now lives in the paper's
