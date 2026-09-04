@@ -112,7 +112,7 @@ Variance vectors are drawn separately, so correlation structure and scale
 can be crossed. Every generator accepts an explicit seed, and every number
 in this paper descends from one. The scripts sit beside the paper.
 
-\section{Demonstration: one estimator, twelve-fold spread}
+\section{Demonstration: one estimator, twelve-fold spread}\label{sec:lw-demo}
 
 The Ledoit--Wolf shrinkage intensity \citep{ledoit2004} is a workhorse
 diagnostic: how far
@@ -328,11 +328,6 @@ scaled-identity target \citep{ledoit2004} on every draw under \texttt{sparse\_pr
 \texttt{residuals}. Even the choice between two targets from the same
 authors is ensemble-relative.
 
-A regime check guards against the $T=2n$ coincidence: at $T=120$ the
-intensity spread persists ($0.04$ to $0.84$) and clipping still helps
-only \texttt{sparse\_precision} and \texttt{hierarchical} (script beside
-the paper).
-
 The remaining four audits concern inference: tests, certification rules,
 and reported dimensions. Their currency is rates and counts rather than
 loss ratios (Table~\ref{tab:rates}).
@@ -433,6 +428,76 @@ broken. Cell entries are the medians and rates of
 Tables~\ref{tab:audits} and~\ref{tab:rates}. Outlined cells mark each
 claim's home turf, the correlation structure it was demonstrated on or
 intended for.}\label{fig:matrix}
+\end{figure}
+
+\section{Does it survive scale?}\label{sec:scale}
+
+Every audit above fixes $n=30$. A natural objection is that
+ensemble-relativity is a small-panel artifact, that estimation noise
+dominates at $n=30$ and would wash out with more assets. We re-run the
+Ledoit--Wolf intensity demonstration of Section~\ref{sec:lw-demo} and five of the seven
+Table~\ref{tab:audits} claims (finance, econophysics, data assimilation,
+signal processing, and the graphical lasso, both the cross-validated
+penalty and a fixed one) across a $5\times5$ grid, $n\in\{30, 100, 300,
+1000, 3000\}$ crossed with $T/n\in\{0.5,1,2,4,8\}$, medians over
+twenty-four seeded draws per cell (twelve at $n=1000$ and $n=3000$).
+Figure~\ref{fig:scale} plots all thirty-five cells of every audit, one
+line per ensemble; the two largest passes alone cost on the order of a
+hundred worker-hours apiece.
+
+The spread does not close. At $n=3000$, $T/n=1$, the Ledoit--Wolf
+intensity still ranges from $0.002$ (\texttt{factor}) to $0.780$
+(\texttt{sparse\_precision}), a wider ratio than the $0.157$--$0.720$
+spread at $n=30$. Marchenko--Pastur clipping helps \texttt{sparse\_precision}
+more as $n$ grows ($0.293\to0.148$ at $T/n=2$) and hurts \texttt{factor}
+far more ($1.366\to9.432$); its verdict does not flip for a single
+literature ensemble between $n=30$ and $n=3000$ at fixed $T/n=2$, and
+neither does diagonal loading's, the graphical lasso's, or Gaspari--Cohn
+tapering's.\footnote{The fixed-penalty graphical lasso records one
+nominal flip, \texttt{lkj} from $1.004$ to $1.000$, indistinguishable
+from a tie. The cross-validated graphical lasso is incomplete at
+$n=1000$, roughly half its cells missing to per-cell timeouts, and
+dropped entirely at $n=3000$, where a single fit runs into the hour.} A
+claim's ensemble-verdict at $n=30$ is, for six of the seven claims
+re-run, a reliable predictor of its verdict at a hundred times the
+dimension.
+
+The exception is hierarchical risk parity. At $n=30$, $T/n=2$, HRP
+roughly breaks even against long-only minimum variance under
+\texttt{ar1} and \texttt{hierarchical}, the two literature ensembles
+whose structure the bisection tree is built to match (ratios $0.890$,
+$0.962$). At $n=3000$, same $T/n$, it loses clearly under both
+($1.259$, $2.580$). \texttt{sparse\_precision} remains an outright HRP
+win at every scale tested; the two ensembles that only approximately
+matched the tree's assumptions stop matching as dimension grows,
+presumably because a fixed bisection increasingly coarsens chain and
+nested-cluster structure that a thirty-asset tree can still track
+closely, while the long-only quadratic program keeps exact use of the
+full covariance regardless of $n$. Even a claim's home-turf verdict is
+not guaranteed to survive scale.
+
+Five of the fifteen ensembles turn numerically rank-deficient at the
+largest dimensions tested and need a positive-semidefinite floor before
+any audit runs: three package-native curiosities (\texttt{walk} on
+$58\%$ of $n=3000$ panels, \texttt{residuals} on $33\%$,
+\texttt{animals} on $17\%$) and two literature ensembles
+(\texttt{archakov\_hansen} on $14\%$, \texttt{kernel} on $3\%$). The
+floor is applied before scoring, so the numbers above already reflect
+it; a reader citing an \texttt{archakov\_hansen} or \texttt{kernel}
+verdict at $n=3000$ should know that a seventh to a thirtieth of its
+draws needed rescue to stay a valid correlation matrix.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{scale.pdf}
+\caption{Seven audits (rows: Ledoit--Wolf intensity, MP clipping, HRP,
+MVDR loading, cross-validated and fixed-penalty graphical lasso,
+Gaspari--Cohn tapering) across five dimensions (columns, $n=30$ to
+$3000$) and five regimes within each panel ($T/n=0.5$ to $8$), one line
+per ensemble, colored by structural family; dashed lines are
+package-native curiosities. Rows share a $y$-axis scale within each
+audit so drift with $n$ is visible. Cross-validated glasso is not run at
+$n=3000$.}\label{fig:scale}
 \end{figure}
 
 \section{One leaderboard per measure}

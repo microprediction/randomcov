@@ -32,13 +32,18 @@ leaderboard over scikit-learn and precise (`ranking_sweep.py` ->
 `ranking_results.json`, figure via `ranking_matrix.py`; five distinct
 winners across the fifteen ensembles).
 
-TO RUN ON A BIGGER MACHINE: the regime sweep (`regime_sweep.py`) re-runs
-six audits at T in {15, 30, 60, 120, 240} (T/n from 0.5 to 8) under every
-ensemble — `python papers/measure_audit/regime_sweep.py` (~20-40 min,
-graphical-lasso-dominated; `REPS=1` for a smoke test), then
-`python papers/measure_audit/regime_matrix.py` renders `regime.pdf`/`.png`.
-The code path is smoke-tested; the paper's regime section should be
-written from the full-rep results.
+Also complete: the scaled regime sweep (`scale_sweep.py` ->
+`scale_summary.py` -> `SCALE.md`, figure via `scale_matrix.py` ->
+`scale.pdf`/`.png`) — seven audits (LW intensity, MP clipping, HRP, MVDR
+loading, CV and fixed-penalty graphical lasso, GC tapering) across
+$n\in\{30,100,300,1000,3000\}$ crossed with $T/n\in\{0.5,1,2,4,8\}$,
+24 seeded reps per cell (12 at $n\ge1000$). Six of the seven claims are
+verdict-stable across three orders of magnitude in $n$; HRP is the
+exception, flipping from a near-tie to a clear loss under `ar1` and
+`hierarchical` between $n=30$ and $n=3000$ at $T/n=2$. Written up in the
+paper's "Does it survive scale?" section. The $n=1000$ and $n=3000$
+passes took 778 and 898 worker-minutes respectively; CV glasso is
+dropped at $n=3000$ (a single fit runs past the hour).
 
 The full results assemble into the audit matrix (`audit_matrix.py` ->
 `matrix.pdf`/`matrix.png`): claims x ensembles, colored by verdict, with
