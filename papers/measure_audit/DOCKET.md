@@ -39,11 +39,15 @@ loading, CV and fixed-penalty graphical lasso, GC tapering) across
 $n\in\{30,100,300,1000,3000\}$ crossed with $T/n\in\{0.5,1,2,4,8\}$,
 24 seeded reps per cell (12 at $n\ge1000$). Six of the seven claims are
 verdict-stable across three orders of magnitude in $n$; HRP is the
-exception, flipping from a near-tie to a clear loss under `ar1` and
-`hierarchical` between $n=30$ and $n=3000$ at $T/n=2$. Written up in the
-paper's "Does it survive scale?" section. The $n=1000$ and $n=3000$
-passes took 778 and 898 worker-minutes respectively; CV glasso is
-dropped at $n=3000$ (a single fit runs past the hour).
+exception, flipping from a near-tie to a clear loss under `hierarchical`
+between $n=30$ and $n=3000$ at $T/n=2$. The grid's 12-rep `ar1` cell at
+$n=3000$ also read as a flip (median 1.259) but did not replicate: a
+targeted 48-rep follow-up (`hrp_n3000_replication.py`) put the median
+back at 0.914 with 56% of draws still favoring HRP — the 12-rep estimate
+was noise, not a scale effect. Written up in the paper's "The audits at
+scale" section. The $n=1000$ and $n=3000$ passes took 778 and 898
+worker-minutes respectively; CV glasso is dropped at $n=3000$ (a single
+fit runs past the hour).
 
 The full results assemble into the audit matrix (`audit_matrix.py` ->
 `matrix.pdf`/`matrix.png`): claims x ensembles, colored by verdict, with

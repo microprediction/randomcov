@@ -40,10 +40,15 @@ demonstrated on or intended for. The \texttt{randomcov} library names the
 measures and seeds the draws, so a published claim can be re-run under all
 fifteen and its verdict reported per measure. A joint leaderboard of the
 scikit-learn and \texttt{precise} covariance estimators has five different
-winners across the fifteen ensembles. Eleven audits are completed
-here; a docket of candidates from astronomy, genomics, neuroscience, and
-chemometrics, including provably ensemble-invariant claims that serve as
-null controls, is assembled for the rest.
+winners across the fifteen ensembles. The pattern survives scale: six of
+seven claims re-run from $n=30$ to $n=3000$ keep their verdict, and the
+seventh, hierarchical risk parity, flips from a tie to a clear loss under
+its \texttt{hierarchical} home-turf ensemble as dimension grows; a second
+apparent flip, under \texttt{ar1}, does not survive replication. Eleven
+audits are completed here; a docket of candidates from astronomy,
+genomics, neuroscience, and chemometrics, including provably
+ensemble-invariant claims that serve as null controls, is assembled for
+the rest.
 \end{abstract}
 
 \section{The unstated measure}
@@ -430,7 +435,7 @@ claim's home turf, the correlation structure it was demonstrated on or
 intended for.}\label{fig:matrix}
 \end{figure}
 
-\section{Does it survive scale?}\label{sec:scale}
+\section{The audits at scale}\label{sec:scale}
 
 Every audit above fixes $n=30$. A natural objection is that
 ensemble-relativity is a small-panel artifact, that estimation noise
@@ -462,19 +467,30 @@ claim's ensemble-verdict at $n=30$ is, for six of the seven claims
 re-run, a reliable predictor of its verdict at a hundred times the
 dimension.
 
-The exception is hierarchical risk parity. At $n=30$, $T/n=2$, HRP
+The exception is hierarchical risk parity, but only under one of the two
+ensembles that looked exceptional at $n=30$. At $n=30$, $T/n=2$, HRP
 roughly breaks even against long-only minimum variance under
 \texttt{ar1} and \texttt{hierarchical}, the two literature ensembles
 whose structure the bisection tree is built to match (ratios $0.890$,
-$0.962$). At $n=3000$, same $T/n$, it loses clearly under both
-($1.259$, $2.580$). \texttt{sparse\_precision} remains an outright HRP
-win at every scale tested; the two ensembles that only approximately
-matched the tree's assumptions stop matching as dimension grows,
-presumably because a fixed bisection increasingly coarsens chain and
-nested-cluster structure that a thirty-asset tree can still track
-closely, while the long-only quadratic program keeps exact use of the
-full covariance regardless of $n$. Even a claim's home-turf verdict is
-not guaranteed to survive scale.
+$0.962$, twenty-four draws). At $n=3000$, the twelve-draw grid median
+moves to $1.259$ and $2.580$, both apparent losses. A targeted
+replication at forty-eight draws confirms the \texttt{hierarchical} loss
+(median $2.557$; every draw favors minimum variance) and retracts the
+\texttt{ar1} one: the forty-eight-draw median is $0.914$, $56\%$ of
+draws still favor HRP, and the ratio ranges from $0.69$ to
+$1.89$.\footnote{\texttt{hrp\_n3000\_replication.py}, beside this paper.
+Reps~$0$--$11$ reuse the grid's own deterministic seeding; reps
+$12$--$47$ extend it under the identical scheme.} The twelve-draw
+estimate had simply landed on the high side of a noisy statistic.
+
+\texttt{sparse\_precision} remains an outright HRP win at every scale
+tested, and \texttt{ar1} remains close to a tie at every scale tested.
+Only \texttt{hierarchical} genuinely flips, presumably because a fixed
+bisection increasingly coarsens nested-cluster structure that a
+thirty-asset tree can still track closely, while the long-only quadratic
+program keeps exact use of the full covariance regardless of $n$. A
+claim's home-turf verdict is not guaranteed to survive scale. A low rep
+count is not guaranteed to survive a check.
 
 Five of the fifteen ensembles turn numerically rank-deficient at the
 largest dimensions tested and need a positive-semidefinite floor before
