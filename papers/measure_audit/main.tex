@@ -25,30 +25,22 @@ every number here live beside this paper at
 \maketitle
 
 \begin{abstract}
-A claim about the behavior of a covariance or correlation method is a claim
-about a distribution over matrices, and the distribution is rarely stated.
-Papers validate estimators, factorizations, and portfolio constructions on
-whatever generator is at hand: a Wishart draw, a uniform LKJ sample, one
-empirical panel. We measure how much the choice matters. Across fifteen
-named, seeded ensembles at identical dimension and sample size, the
+A claim about the behavior of a covariance or correlation method is a
+claim about a distribution over matrices, and the distribution is rarely
+stated. We measure how much that omission matters. Across fifteen named,
+seeded ensembles at identical dimension and sample size, the
 Ledoit--Wolf shrinkage intensity ranges from $0.07$ to $0.86$, and eleven
-audited claims from eleven fields, from hierarchical risk parity to the
-Mantel test, each flip verdict as the ensemble changes, for stated
-structural reasons. The results assemble into a matrix of claims against
-measures whose outlined cells mark the structure each claim was
-demonstrated on or intended for. The \texttt{randomcov} library names the
-measures and seeds the draws, so a published claim can be re-run under all
-fifteen and its verdict reported per measure. A joint leaderboard of the
-scikit-learn and \texttt{precise} covariance estimators has five different
-winners across the fifteen ensembles. The pattern survives scale: six of
-seven claims re-run from $n=30$ to $n=3000$ keep their verdict, and the
-seventh, hierarchical risk parity, flips from a tie to a clear loss under
-its \texttt{hierarchical} home-turf ensemble as dimension grows; a second
-apparent flip, under \texttt{ar1}, does not survive replication. Eleven
-audits are completed here; a docket of candidates from astronomy,
-genomics, neuroscience, and chemometrics, including provably
-ensemble-invariant claims that serve as null controls, is assembled for
-the rest.
+audited claims from eleven fields flip verdict as the ensemble changes,
+for stated structural reasons. The \texttt{randomcov} library names the
+measures and seeds the draws, so any claim can be re-run under all
+fifteen; the results assemble into a matrix of claims against measures,
+and a joint leaderboard of scikit-learn and \texttt{precise} estimators
+has five different winners. The pattern survives scale: six of seven
+claims re-run from $n=30$ to $n=3000$ keep their verdict, and the
+seventh, hierarchical risk parity, flips under its own home-turf
+ensemble as dimension grows. Eleven audits are completed here; a docket
+from astronomy, genomics, neuroscience, and chemometrics, including
+ensemble-invariant null controls, is assembled for the rest.
 \end{abstract}
 
 \section{The unstated measure}
