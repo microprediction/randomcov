@@ -111,11 +111,7 @@ in this paper descends from one. The scripts sit beside the paper.
 
 \section{Demonstration: one estimator, twelve-fold spread}\label{sec:lw-demo}
 
-The Ledoit--Wolf shrinkage intensity \citep{ledoit2004} is a workhorse
-diagnostic: how far
-the sample covariance is pulled toward its target. Fix $n=30$ variables,
-$T=60$ observations, twenty replications, and vary only the generating
-ensemble.
+We begin by looking at the well known Ledoit-Wolf shrinkage estimator because this is used across so many applications. Moreover the diagnostic is easy to understand and states how far the sample covariance should be pulled towards a ``target'' (using neutral terminology -- the target can take different flavors). The table below demonstrates the variation. Here we are fixing $n=30$ variables each observed exactly $T=60$ times. Even though this is not pressing up against the critical $n=T$ boundary we still see tremendous variation. We used $20$ draws to get a quick sense.
 
 \begin{center}\small
 \begin{tabular}{lcc}
@@ -141,39 +137,38 @@ sparse\_precision & $0.862$ & $0.066$ \\
 \end{tabular}
 \end{center}
 
-The intensity spans $0.072$ to $0.862$ at identical $(n,T)$. A paper
-reporting ``typical'' shrinkage from one generator is reporting a property
-of its generator. The ordering is interpretable: strong low-rank structure
+The intensity spans $0.072$ to $0.862$ at identical $(n,T)$. So clearly, any paper
+reporting ``typical'' shrinkage from one generator is actually reporting a property
+of its generator. The ordering is interpretable too. We see that strong low-rank structure
 (\texttt{animals}, \texttt{residuals}, \texttt{factor}) wants little
 shrinkage, and near-unstructured draws (\texttt{wishart},
 \texttt{sparse\_precision}) want a great deal. The within-ensemble
-standard deviation is itself informative: \texttt{ar1} spans $0.23$ across
-its own parameter draws, so even a named ensemble can hide a range.
+standard deviation is itself informative. Note that \texttt{ar1} spans $0.23$ across
+its own parameter draws.
 
 \section{Demonstration: one algorithm, one failing ensemble}
 
-A deterministic algorithm for multinomial probit choice probabilities (the
+We pick on one of our own examples. A deterministic algorithm for multinomial probit choice probabilities (the
 \texttt{winning} package; paper in that repository) reports median
-absolute error by ensemble after fitting a structured covariance grammar.
-Under twelve of the fifteen measures the error is $1$--$4\times10^{-5}$;
-under dense-strong ensembles it is $1$--$4\times10^{-4}$; under
-\texttt{kernel} fields (Mat\'ern and RBF) it is $4\times10^{-3}$. The
-failure has a mechanism: kernel covariance is locality, approximately
-Markov, and offers a low-rank factorization no good purchase. A validation
-run on any single ensemble would have reported either ``essentially
-exact'' or ``inadequate,'' both correctly, for the same method.
+absolute error by ensemble after fitting a structured covariance grammar. Often this is quite good.
+In fact for twelve of the fifteen measures the error is $1$--$4\times10^{-5}$. On the other hand for what we term dense-strong ensembles it is $1$--$4\times10^{-4}$ and under
+\texttt{kernel} fields (Mat\'ern and RBF) it is $4\times10^{-3}$. In this case this is predictable because the
+fit in question does not yet admit band-diagonal structure catering to kernel covariance patterns. The point is that
+a validation run on any single ensemble would have reported either ``essentially
+exact'' or ``inadequate,'' both correctly, for the same method. Writing the random covariance generation family was a big part of the motivation: producing better software.
 
 \section{Eleven audits, eleven fields}
 
-The audit protocol is short: take a published claim, re-run its
-demonstration seeded under every named ensemble, report the verdict per
-ensemble, and flag the flips. We audit one claim from each of eleven
-fields, seven about estimators and constructions
+Curiosity led us to wonder if the same brittleness of claim might apply more broadly, or whether, to put a more positive spin on the topic, there may be many opportunities to identify improvements to existing tools. Our methodology is very simple and short here. We take a published claim, re-run its demonstration using every type of covariance generator at our disposal, and report the verdict. The goal is not to ``debunk'' any claims which are usually made within their domain and subject to their own data or generation limitations. Indeed if anything the selection was biased towards things we either knew to be helpful or hoped would be.
+
+We tried to spread this out and audit one claim from each of eleven
+different fields, seven about estimators and constructions
 (Table~\ref{tab:audits}) and four about inference and dimensionality
-(Table~\ref{tab:rates}). Figure~\ref{fig:matrix} assembles the results
-into a single matrix and outlines each claim's \emph{home turf}, the
-correlation structure it was demonstrated on or intended for. All runs
-use $n=30$ with twenty replications unless stated; sampled panels use
+(Table~\ref{tab:rates}). This part of the selection was rather ad hoc, as noted.
+Nonetheless Figure~\ref{fig:matrix} assembles the results
+into a single matrix and outlines each claim's \emph{home turf}, by which we mean the
+correlation structure it was demonstrated on or intended for as best we interpret. All runs
+use $n=30$ with twenty replications unless stated. Sampled panels use
 $T=60$ except where the claim's own regime dictates otherwise.
 
 \paragraph{Finance.} \citet{lopezdeprado2016} reports that hierarchical
@@ -195,14 +190,14 @@ ensembles admit near-perfect hedges that only signed weights reach.
 \paragraph{Econophysics.} \citet{laloux1999} flatten the eigenvalues
 of the sample correlation that fall below the Marchenko--Pastur edge
 $(1+\sqrt{n/T})^{2}$ and report a cleaner matrix. Column~2 gives the
-Frobenius-loss ratio of clipped to raw sample correlation. Cleaning is
+Frobenius-loss ratio of clipped to raw sample correlation. We observe that this ``cleaning'' is
 excellent under \texttt{sparse\_precision} ($0.30$) and
 \texttt{hierarchical} ($0.76$), where the true spectrum really is spikes
-over a bulk. It damages the estimate under eleven of fifteen ensembles, worst, at
+over a bulk. On the other hand it appears to damage the estimate under eleven of fifteen ensembles, worst, at
 $1.43$--$1.47$, under \texttt{animals}, \texttt{residuals},
 \texttt{kernel}, and \texttt{archakov\_hansen}, where genuine eigenvalue
 mass lives below the edge and is erased as noise. The recipe presumes signal
-means spikes; locality puts signal in the bulk.
+means spikes. However in contrast, locality puts signal in the bulk. Picking the right tool for the right task is important.
 
 \paragraph{Geostatistics.} The screening effect of \citet{stein2002} says
 that a few nearest neighbors, here the most correlated, nearly attain the
@@ -212,11 +207,10 @@ the best five predictors to conditional variance given all $n-1$.
 Screening holds essentially exactly under \texttt{ar1} (Markov, ratio
 $1.00$), \texttt{sparse\_precision}, \texttt{hierarchical}, and
 \texttt{block\_equicorr}. It fails several-fold under \texttt{onion} and
-\texttt{vine}, and under \texttt{kernel} itself ($5.7$): the ensemble
-mixes Mat\'ern with squared-exponential fields, and for the smooth draws
-interpolation is nearly deterministic from all sites but not from five.
-Stein's own caveat, that screening depends on smoothness, reappears
-inside the one ensemble geostatistics would call home.
+\texttt{vine}, and under \texttt{kernel} itself ($5.7$). Here the ensemble
+is mixing Mat\'ern with squared-exponential fields and for the smooth draws
+interpolation is nearly deterministic from all sites, but not from five.
+Thus we see that Stein's own caveat, that screening depends on smoothness, plays out.
 
 \paragraph{Psychometrics.} \citet{horn1965} retains the components whose
 sample eigenvalues exceed the corresponding 95th-percentile eigenvalue of
@@ -232,18 +226,17 @@ under \texttt{sparse\_precision}. The number of factors a study reports
 is, in part, a property of the generating measure its data resemble.
 
 \paragraph{Data assimilation.} Ensemble Kalman filtering runs
-member-starved, and the standard repair is covariance localization:
+member-starved, so to speak, and the standard way of dealing with this is covariance localization. In other words we
 taper the sample covariance entrywise with a Gaspari--Cohn function \citep{gaspari1999} of inter-variable distance
-\citep{houtekamer2001,hamill2001}. \citet{paz2015} arrived at the same recipe for
-correlation-function bins as covariance tapering, so this audit serves
-two literatures at once. With $N=20$ members for $n=30$ variables and a
+\citep{houtekamer2001,hamill2001}. Similarly, \citet{paz2015} arrived at very much the same approach for
+correlation-function bins, so this audit applies to both fields. With $N=20$ members for $n=30$ variables and a
 taper of index distance with half-radius $6$, column~5 reports the
-Frobenius-loss ratio of tapered to raw. Localization helps wherever the
+Frobenius-loss ratio of tapered to raw. The split is interpretable. Localization helps wherever the
 estimate is noisy and the truth carries no long-range structure in taper
-coordinates, including the dense elliptope samplers, where variance
-reduction beats the bias; it hurts under \texttt{factor},
+coordinates (including the dense elliptope samplers) where variance
+reduction beats the bias. However this actually hurts under \texttt{factor},
 \texttt{residuals}, and \texttt{animals} ($1.66$--$1.71$), whose common
-factors are long-range by construction. It also hurts under
+factors are long-range by construction. It also reduces performance under
 \texttt{kernel} ($1.46$), the one ensemble that genuinely is local,
 because kernel locality lives in a latent two-dimensional point cloud
 rather than in index order. Localization requires locality in the
@@ -269,11 +262,11 @@ connectomes \citep{smith2011}, and sparse cosmological precision matrices
 \citep{padmanabhan2016}. Column~7
 reports the Frobenius loss of the cross-validated glasso precision
 against the true precision, relative to inverting a Ledoit--Wolf
-shrinkage estimate. The sparsity prior wins clearly where precisions are
+shrinkage estimate. And indeed we see this. The sparsity prior wins clearly where precisions are
 genuinely sparse or banded (\texttt{sparse\_precision} $0.63$,
 \texttt{hierarchical} $0.68$, \texttt{ar1} $0.70$), ties across the dense
-elliptope middle, and loses under \texttt{residuals} and \texttt{factor}
-($1.03$--$1.09$). Dense low-rank structure is the worst case for
+elliptope middle. But it loses under \texttt{residuals} and \texttt{factor}
+($1.03$--$1.09$) covariance families. No mystery here. Dense low-rank structure is the worst case for
 sparsity.
 
 \begin{table}[t]
@@ -318,16 +311,14 @@ over inverted Ledoit--Wolf (below one: the sparsity prior wins). Each
 column's verdict flips across rows.}\label{tab:audits}
 \end{table}
 
-A smaller companion audit: with oracle shrinkage intensities, the
+We also performed a smaller companion study. With oracle shrinkage intensities, the
 constant-correlation target of \citet{ledoit2003} beats their
 scaled-identity target \citep{ledoit2004} on every draw under \texttt{sparse\_precision}
 (median loss ratio $0.62$) and loses on nineteen of twenty draws under
 \texttt{residuals}. Even the choice between two targets from the same
-authors is ensemble-relative.
+authors is ensemble-relative!
 
-The remaining four audits concern inference: tests, certification rules,
-and reported dimensions. Their currency is rates and counts rather than
-loss ratios (Table~\ref{tab:rates}).
+Turning to other types of tests next, we have to switch to measuring hypothesis tests, rates and counts. See (Table~\ref{tab:rates}) which we now discuss item by item.
 
 \paragraph{Evolutionary biology.} \citet{cheverud1996} declares two genetic
 covariance matrices similar when their mean response-vector correlation
@@ -337,36 +328,36 @@ same ensemble. This is a population property with no sampling noise, so a
 sound test should declare similarity about $5\%$ of the time. It does so
 under \texttt{residuals}, \texttt{factor}, and \texttt{archakov\_hansen}
 ($0\%$), and declares independent matrices similar $100\%$ of the time
-under eleven of the fifteen ensembles. Under \texttt{sparse\_precision}
+under eleven of the fifteen ensembles. Note however that under \texttt{sparse\_precision}
 the mean skewers correlation between independent matrices is $0.97$,
 because near-diagonal matrices respond to any skewer with the skewer
-itself. \citet{rohlf2017} raised this objection in general terms; the
-ensembles make it quantitative.
+itself. This observation is not new. Indeed \citet{rohlf2017} raises this objection in general terms, anticipating the measurement here.
 
 \paragraph{Climatology.} \citet{north1982} declare a leading EOF
 trustworthy when its eigenvalue sampling error $\lambda\sqrt{2/T}$ is
-smaller than the gap to the next eigenvalue. We score the
-false-reassurance rate: among draws the rule declares separated, how
-often the leading sample eigenvector is mostly wrong, meaning squared
-alignment with the truth below one half. The rate is $0\%$ under six
+smaller than the gap to the next eigenvalue. Where does this work? We score the
+false-reassurance rate, which is to say that among draws the rule declares separated, we look at how
+often the leading sample eigenvector is mostly wrong (squared
+alignment with the truth below one half). The rate is $0\%$ under six
 ensembles, $57\%$ under \texttt{wishart}, and $100\%$ under
 \texttt{sparse\_precision}, which declares separation on only $12\%$ of
-draws but is always wrong when it does. The rule is a first-order
-perturbation statement: excellent for spiked spectra, unreliable exactly
-where spectra are quasi-degenerate, and silent about which case obtains.
+draws but is always wrong when it does. We take from this that the rule is a first-order
+perturbation statement and excellent for spiked spectra. However one should also
+expect it to be unreliable exactly
+where spectra are quasi-degenerate.
 
 \paragraph{Ecology.} \citet{guillot2013} report that the Mantel test
 \citep{mantel1967} rejects independence between distance matrices at $25$--$55\%$ under
 spatially autocorrelated fields, at nominal $5\%$. Our audit puts the
-original claim and the critique on the same footing: two independent site
-variables drawn with covariance $C$, Euclidean distance matrices, $499$
-label permutations. The realized type-I error is the nominal $5\%$ under
+original claim and the critique on the same footing (two independent site
+variables drawn with covariance $C$ with Euclidean distance matrices and $499$
+label permutations). The realized type-I error is the nominal $5\%$ under
 \texttt{onion} and \texttt{vine}, and $37$--$40\%$ under
 \texttt{residuals}, \texttt{factor}, \texttt{kernel}, and
 \texttt{animals}. This reproduces the published inflation under
 locality-and-factor structure and shows calibration under dense elliptope
-measures. Neither ``the Mantel test is broken'' nor ``the Mantel test is
-fine'' is an ensemble-free sentence.
+measures. So in keeping with our theme, one could say ``the Mantel test is broken'' or ``the Mantel test is
+fine'' depending on which ensemble one chooses.
 
 \paragraph{Quantitative genetics.} \citet{kirkpatrick2009} reports effective
 dimension counts $n_D=\sum_i\lambda_i/\lambda_{\max}$ of roughly one to
@@ -427,9 +418,9 @@ claim's home turf, the correlation structure it was demonstrated on or
 intended for.}\label{fig:matrix}
 \end{figure}
 
-\section{The audits at scale}\label{sec:scale}
+\section{Do claims scale?}\label{sec:scale}
 
-Every audit above fixes $n=30$. A natural objection is that
+Every study above fixes $n=30$. A reasonable objection is that
 ensemble-relativity is a small-panel artifact, that estimation noise
 dominates at $n=30$ and would wash out with more assets. We re-run the
 Ledoit--Wolf intensity demonstration of Section~\ref{sec:lw-demo} and five of the seven
@@ -538,19 +529,18 @@ are ordered by mean rank.}\label{fig:ranking}
 
 \section{Scope}
 
-The audits measure the ensemble-sensitivity of a claim, not the care of
-its authors. Stein proved that screening depends on smoothness; \citet{bickel2008} state the bandable class their banding rates require;
+We reiterate that the audits measure the ensemble-sensitivity of a claim, often outside the careful scope of the authors' original intent.
+Stein proved that screening depends on smoothness; \citet{bickel2008} state the bandable class their banding rates require;
 L\'opez de Prado demonstrated HRP on equity covariances and said so; the
 data-assimilation literature has always tied localization to physical
-distance. Where a paper states its generating law, the audit maps the
-claim's domain of validity onto named coordinates and adds nothing.
+distance.
 
-The exposure arises downstream. Verdicts certified under one measure are
+The interpretation risk if any usually arises downstream with less fastidious renderings of the original verdict. Those certified under one measure are
 quoted, cited, and defaulted into software as if they were measure-free,
-and the second-hand version of a scoped claim is usually unscoped.
-Naming the ensemble gives the scope a form that survives citation.
+and the second-hand version of a scoped claim is usually unscoped. There is an obvious solution.
+Naming the ensembles and implementing tests can ameliorate the danger and improve understanding.
 
-\section{The docket}
+\section{Remarks}
 
 The pattern across Figure~\ref{fig:matrix} is not random: each field's
 signature claim performs best on the ensembles that resemble the data the
@@ -605,9 +595,9 @@ ensemble-relative plug-in practice, as when those corrections are
 applied to shrunk or tapered estimates whose distribution is no longer
 Wishart.
 
-No method in the tables dominates across the rows. Each owns the
+There is no free lunch. No method in the tables dominates across the rows. Each owns the
 ensembles whose structure it assumes, and the matrix draws the borders.
-We leave to future work the remaining docket entries, beginning with the
+We leave to future work the remaining entries, beginning with the
 Hartlap factor as a pipeline control, the nonlinear-against-linear
 shrinkage comparison, and the WGCNA scale-free criterion.
 
