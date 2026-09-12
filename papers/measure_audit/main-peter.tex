@@ -48,53 +48,58 @@ ensemble-invariant null controls, is assembled for the rest.
 Empirical claims about covariance methods have the form ``estimator $A$
 beats estimator $B$,'' ``the shrinkage intensity is typically moderate,''
 ``the factorization recovers structure,'' with performance averaged over
-random test matrices. The average is taken with respect to some generating
-law, and the law is usually inherited from convenience, and from the
-field. Finance validates on equity panels; econophysics on the same panels
-with random-matrix nulls; geostatistics on smooth kernels; psychometrics
-on low-rank factor models; graphical modeling on sparse precisions;
-cosmology on mock catalogs of ordered correlation-function bins.
+random test matrices. That average is of course taken with respect to
+some generating law, and in practice the law is usually inherited from
+convenience, and from the field. Finance validates on equity panels;
+econophysics on the same panels with random-matrix nulls; geostatistics
+on smooth kernels; psychometrics on low-rank factor models; graphical
+modeling on sparse precisions; cosmology on mock catalogs of ordered
+correlation-function bins.
 
 Different laws produce matrices with different spectra, different
-locality, and different factor content. A verdict certified under one law
-carries no warrant under another. The measurements below show that the
-omission is not a technicality.
+locality, and different factor content. So it should be no surprise that
+a verdict certified under one law carries no warrant under another. What
+the measurements below show is that this omission is not a mere
+technicality.
 
 \section{Precedents}
 
-That method comparisons inherit their verdicts from the simulation design
-is established in several literatures. \citet{morris2019} require
-simulation studies to declare the data-generating mechanism as a design
-choice of equal rank with the estimand. \citet{boulesteix2013} trace the
-over-optimism of self-reported comparisons to test beds chosen by the
-method's own authors. \citet{niessl2022} re-analyze one benchmark under
-hundreds of design and analysis options and find that almost any method
-can reach almost any rank. \citet{hooker1995} made the complaint for
-heuristics; \citet{wolpert1997} give the limit statement, that averaged
-over all objectives all optimizers tie.
+We are hardly the first to notice that method comparisons inherit their
+verdicts from the simulation design; this is established already in
+several literatures. \citet{morris2019} require simulation studies to
+declare the data-generating mechanism as a design choice of equal rank
+with the estimand. \citet{boulesteix2013} trace the over-optimism of
+self-reported comparisons to test beds chosen by the method's own
+authors. \citet{niessl2022} re-analyze one benchmark under hundreds of
+design and analysis options and find that almost any method can reach
+almost any rank. \citet{hooker1995} made the complaint for heuristics;
+\citet{wolpert1997} give the limit statement, that averaged over all
+objectives all optimizers tie.
 
-The correlation-matrix version also has precedent. \citet{joe2006} and
-\citet{lkj2009} supply the standard samplers. \citet{hardin2013} argue
-that the habitual generators produce unrealistic matrices and bias the
-evaluation of statistical techniques, and propose a better one.
-\citet{marti2020} learns a generator from financial correlation matrices
-and reports, in accompanying experiments, that the HRP advantage fades on
-matrices without hierarchical structure.\footnote{\texttt{gmarti.gitlab.io/qfin/2019/12/04/hierarchical-risk-parity-part-3.html}}
+The correlation-matrix version also has precedent, which is reassuring.
+\citet{joe2006} and \citet{lkj2009} supply the standard samplers.
+\citet{hardin2013} argue that the habitual generators produce unrealistic
+matrices and bias the evaluation of statistical techniques, and propose a
+better one. \citet{marti2020} learns a generator from financial
+correlation matrices and reports, in accompanying experiments, that the
+HRP advantage fades on matrices without hierarchical
+structure.\footnote{\texttt{gmarti.gitlab.io/qfin/2019/12/04/hierarchical-risk-parity-part-3.html}}
 \citet{papenbrock2021} evolve synthetic correlations to ask which market
 regimes favor which allocator. \citet{alvarez2014} document the Bayesian
 mirror image: posterior conclusions about a covariance track the prior
 family placed on it.
 
-The present paper adds the instrument and the audits: a fixed battery of
-fifteen named, seeded, public measures; the re-execution of eleven
-published claims from eleven fields under all of them; the
+What the present paper adds is the instrument and the audits: a fixed
+battery of fifteen named, seeded, public measures; the re-execution of
+eleven published claims from eleven fields under all of them; the
 claims-by-measures matrix as the reporting format; and provably invariant
 theorems run as null controls.
 
 \section{Fifteen named ensembles}
 
-\texttt{randomcov} generates correlation matrices under named, seeded
-measures: \texttt{lkj}, \texttt{onion}, \texttt{vine} (elliptope samplers;
+\texttt{randomcov} generates correlation matrices under fifteen named,
+seeded measures, and we tried to keep the naming honest rather than
+cute: \texttt{lkj}, \texttt{onion}, \texttt{vine} (elliptope samplers;
 \citealp{joe2006,lkj2009}); \texttt{wishart}, \texttt{spectrum} (spectral laws, including
 Marchenko--Pastur and spiked); \texttt{factor}, \texttt{hierarchical},
 \texttt{block\_equicorr} (low-rank and clustered structure); \texttt{ar1},
@@ -106,8 +111,9 @@ Marchenko--Pastur and spiked); \texttt{factor}, \texttt{hierarchical},
 and trajectory ensembles).
 
 Variance vectors are drawn separately, so correlation structure and scale
-can be crossed. Every generator accepts an explicit seed, and every number
-in this paper descends from one. The scripts sit beside the paper.
+can be crossed independently. Every generator accepts an explicit seed,
+and every number in this paper descends from one -- there is no number
+here we cannot regenerate. The scripts sit beside the paper.
 
 \section{Demonstration: one estimator, twelve-fold spread}\label{sec:lw-demo}
 
@@ -171,7 +177,8 @@ correlation structure it was demonstrated on or intended for as best we interpre
 use $n=30$ with twenty replications unless stated. Sampled panels use
 $T=60$ except where the claim's own regime dictates otherwise.
 
-\paragraph{Finance.} \citet{lopezdeprado2016} reports that hierarchical
+\paragraph{Finance.} We start here because it is the field we know best.
+\citet{lopezdeprado2016} reports that hierarchical
 risk parity delivers lower out-of-sample variance than quadratic minimum
 variance, and names estimation error in the inverse as the culprit. We
 build both portfolios from the same sample covariance and score the true
@@ -182,10 +189,10 @@ splits draws roughly evenly under \texttt{ar1} and \texttt{hierarchical},
 the ensembles whose dependency structure the bisection tree can match; it
 loses by an order of magnitude or more under \texttt{animals},
 \texttt{factor}, and \texttt{archakov\_hansen}, where the true matrix
-rewards positions a long-only tree cannot take. Against unconstrained
+rewards positions a long-only tree simply cannot take. Against unconstrained
 minimum variance the losses grow by many more orders of magnitude: under
 \texttt{walk} the median ratio is $\sim\!10^{8.7}$, because near-singular
-ensembles admit near-perfect hedges that only signed weights reach.
+ensembles admit near-perfect hedges that only signed weights can reach.
 
 \paragraph{Econophysics.} \citet{laloux1999} flatten the eigenvalues
 of the sample correlation that fall below the Marchenko--Pastur edge
@@ -217,13 +224,14 @@ sample eigenvalues exceed the corresponding 95th-percentile eigenvalue of
 independent data of the same shape; parallel analysis is the standard
 answer to ``how many factors?'' Column~4 gives the mean retained count:
 $1.8$ under \texttt{sparse\_precision} to $7.3$ under \texttt{onion} at
-identical $(n,T)$. The same sweep scores the eigenvalue-greater-than-one rule of \citet{kaiser1960} against the population count of
+identical $(n,T)$ -- more than a fourfold spread for what is supposed to
+be an objective count. The same sweep scores the eigenvalue-greater-than-one rule of \citet{kaiser1960} against the population count of
 eigenvalues above one. Kaiser over-extracts under \texttt{factor} ($5.7$
 retained against $3.0$ true), under-extracts under \texttt{wishart}
 ($11.2$ against $13.1$), and disagrees with parallel analysis by a factor
 that is itself ensemble-dependent: $1.2$ under \texttt{residuals}, $7$
-under \texttt{sparse\_precision}. The number of factors a study reports
-is, in part, a property of the generating measure its data resemble.
+under \texttt{sparse\_precision}. So the number of factors a study reports
+is, in part, a property of the generating measure its data happen to resemble.
 
 \paragraph{Data assimilation.} Ensemble Kalman filtering runs
 member-starved, so to speak, and the standard way of dealing with this is covariance localization. In other words we
@@ -247,10 +255,10 @@ for the sample-covariance MVDR beamformer in the snapshot-limited regime
 \citep{cox1987,carlson1988}. With $T=40$ snapshots, a
 random unit steering vector, the distortionless constraint, and loading
 $\delta=0.1\,\mathrm{tr}(\hat\Sigma)/n$, column~6 reports the median
-ratio of true output power, loaded over unloaded. Loading halves the
-output power under half the ensembles. It multiplies the power under
+ratio of true output power, loaded over unloaded. The picture is genuinely mixed: loading halves the
+output power under half the ensembles, which is the win it is sold as. But it multiplies the power under
 \texttt{archakov\_hansen} ($21$), \texttt{animals} ($33$),
-\texttt{kernel} ($136$), and \texttt{walk} ($10^{7.9}$). The mechanism
+\texttt{kernel} ($136$), and \texttt{walk} ($10^{7.9}$), which is not a small miss. The mechanism
 is the hedge from the finance audit seen from the other side: under
 near-singular ensembles the beamformer's null-steering lives in the
 smallest eigenvalues, which is exactly what loading erases.
@@ -366,10 +374,10 @@ constraint. At the low precision typical of breeding designs, $T=15$
 here, the estimated $n_D$ deflates the truth by an ensemble-dependent
 factor. A true $n_D$ of $12.3$ under \texttt{sparse\_precision} is
 reported as $5.2$ (ratio $0.42$), while \texttt{factor} and
-\texttt{animals} are nearly honest ($0.90$, $0.89$) because their truth
+\texttt{animals} are nearly honest ($0.90$, $0.89$) simply because their truth
 is already low-dimensional. Across all fifteen ensembles the estimate
-never exceeds $5.2$, whatever the truth. A low reported $n_D$ cannot by
-itself distinguish low-dimensional biology from a noisy estimate of
+never exceeds $5.2$, whatever the truth -- which should give anyone pause. A low reported $n_D$ cannot by
+itself distinguish genuinely low-dimensional biology from a noisy estimate of
 diffuse structure.
 
 \begin{table}[t]
@@ -422,21 +430,21 @@ intended for.}\label{fig:matrix}
 
 Every study above fixes $n=30$. A reasonable objection is that
 ensemble-relativity is a small-panel artifact, that estimation noise
-dominates at $n=30$ and would wash out with more assets. We re-run the
-Ledoit--Wolf intensity demonstration of Section~\ref{sec:lw-demo} and five of the seven
+dominates at $n=30$ and would wash out with more assets. So we checked.
+We re-run the Ledoit--Wolf intensity demonstration of Section~\ref{sec:lw-demo} and five of the seven
 Table~\ref{tab:audits} claims (finance, econophysics, data assimilation,
 signal processing, and the graphical lasso, both the cross-validated
 penalty and a fixed one) across a $5\times5$ grid, $n\in\{30, 100, 300,
 1000, 3000\}$ crossed with $T/n\in\{0.5,1,2,4,8\}$, medians over
-twenty-four seeded draws per cell (twelve at $n=1000$ and $n=3000$).
-Figure~\ref{fig:scale} plots all thirty-five cells of every audit, one
+twenty-four seeded draws per cell (twelve at $n=1000$ and $n=3000$,
+where compute starts to bite). Figure~\ref{fig:scale} plots all thirty-five cells of every audit, one
 line per ensemble; the two largest passes alone cost on the order of a
-hundred worker-hours apiece.
+hundred worker-hours apiece, so this was not a check we could afford to run casually.
 
-The spread does not close. At $n=3000$, $T/n=1$, the Ledoit--Wolf
+The short answer is that the spread does not close. At $n=3000$, $T/n=1$, the Ledoit--Wolf
 intensity still ranges from $0.002$ (\texttt{factor}) to $0.780$
-(\texttt{sparse\_precision}), a wider ratio than the $0.157$--$0.720$
-spread at $n=30$. Marchenko--Pastur clipping helps \texttt{sparse\_precision}
+(\texttt{sparse\_precision}), if anything a wider ratio than the $0.157$--$0.720$
+spread we saw at $n=30$. Marchenko--Pastur clipping helps \texttt{sparse\_precision}
 more as $n$ grows ($0.293\to0.148$ at $T/n=2$) and hurts \texttt{factor}
 far more ($1.366\to9.432$); its verdict does not flip for a single
 literature ensemble between $n=30$ and $n=3000$ at fixed $T/n=2$, and
@@ -445,10 +453,10 @@ tapering's.\footnote{The fixed-penalty graphical lasso records one
 nominal flip, \texttt{lkj} from $1.004$ to $1.000$, indistinguishable
 from a tie. The cross-validated graphical lasso is incomplete at
 $n=1000$, roughly half its cells missing to per-cell timeouts, and
-dropped entirely at $n=3000$, where a single fit runs into the hour.} A
-claim's ensemble-verdict at $n=30$ is, for six of the seven claims
-re-run, a reliable predictor of its verdict at a hundred times the
-dimension.
+dropped entirely at $n=3000$, where a single fit runs into the hour.} So
+for six of the seven claims re-run, a claim's ensemble-verdict at $n=30$
+turns out to be a reliable predictor of its verdict at a hundred times
+the dimension.
 
 The exception is hierarchical risk parity, but only under one of the two
 ensembles that looked exceptional at $n=30$. At $n=30$, $T/n=2$, HRP
@@ -456,24 +464,27 @@ roughly breaks even against long-only minimum variance under
 \texttt{ar1} and \texttt{hierarchical}, the two literature ensembles
 whose structure the bisection tree is built to match (ratios $0.890$,
 $0.962$, twenty-four draws). At $n=3000$, the twelve-draw grid median
-moves to $1.259$ and $2.580$, both apparent losses. A targeted
+moves to $1.259$ and $2.580$, both apparent losses. That surprised us
+enough that we ran it back. A targeted
 replication at forty-eight draws confirms the \texttt{hierarchical} loss
-(median $2.557$; every draw favors minimum variance) and retracts the
+(median $2.557$; every single draw favors minimum variance) and retracts the
 \texttt{ar1} one: the forty-eight-draw median is $0.914$, $56\%$ of
 draws still favor HRP, and the ratio ranges from $0.69$ to
 $1.89$.\footnote{\texttt{hrp\_n3000\_replication.py}, beside this paper.
 Reps~$0$--$11$ reuse the grid's own deterministic seeding; reps
 $12$--$47$ extend it under the identical scheme.} The twelve-draw
-estimate had simply landed on the high side of a noisy statistic.
+estimate had simply landed on the high side of a noisy statistic -- a
+good reminder that a rep count that is fine for most cells is not
+automatically fine for all of them.
 
-\texttt{sparse\_precision} remains an outright HRP win at every scale
-tested, and \texttt{ar1} remains close to a tie at every scale tested.
-Only \texttt{hierarchical} genuinely flips, presumably because a fixed
+\texttt{sparse\_precision} remains an outright HRP win at every scale we
+tested, and \texttt{ar1} remains close to a tie at every scale we
+tested. Only \texttt{hierarchical} genuinely flips, presumably because a fixed
 bisection increasingly coarsens nested-cluster structure that a
 thirty-asset tree can still track closely, while the long-only quadratic
-program keeps exact use of the full covariance regardless of $n$. A
-claim's home-turf verdict is not guaranteed to survive scale. A low rep
-count is not guaranteed to survive a check.
+program keeps exact use of the full covariance regardless of $n$. So a
+claim's home-turf verdict is not guaranteed to survive scale. And, as we
+just saw, a low rep count is not guaranteed to survive a check either.
 
 Five of the fifteen ensembles turn numerically rank-deficient at the
 largest dimensions tested and need a positive-semidefinite floor before
@@ -484,7 +495,7 @@ $58\%$ of $n=3000$ panels, \texttt{residuals} on $33\%$,
 floor is applied before scoring, so the numbers above already reflect
 it; a reader citing an \texttt{archakov\_hansen} or \texttt{kernel}
 verdict at $n=3000$ should know that a seventh to a thirtieth of its
-draws needed rescue to stay a valid correlation matrix.
+draws needed rescue just to stay a valid correlation matrix.
 
 \begin{figure}[p]
 \centering
@@ -501,21 +512,21 @@ $n=3000$.}\label{fig:scale}
 
 \section{One leaderboard per measure}
 
-The audits test one claim at a time; the same harness ranks whole
-libraries. We fit the six covariance estimators of scikit-learn and the
+The audits test one claim at a time; the same harness can just as
+easily rank whole libraries. We fit the six covariance estimators of scikit-learn and the
 eleven batch-applicable estimators of \texttt{precise} to the same twenty
 seeded panels per ensemble and rank them by median relative Frobenius
 loss against the generating covariance (Figure~\ref{fig:ranking}). Five
 estimators take first place somewhere: Ledoit--Wolf on four ensembles,
-OAS and fixed shrinkage and the graphical lasso on three each, and the
-raw sample covariance on \texttt{animals} and \texttt{kernel}, the two
+OAS and fixed shrinkage and the graphical lasso on three each, and,
+perhaps surprisingly, the raw sample covariance on \texttt{animals} and \texttt{kernel}, the two
 ensembles the intensity table already marked as wanting almost no
 shrinkage. The graphical lasso is first on the three
 precision-structured rows and tenth or worse under \texttt{animals},
-\texttt{residuals}, and \texttt{factor}. The \texttt{precise}
+\texttt{residuals}, and \texttt{factor} -- a big fall. The \texttt{precise}
 estimators are built for time-varying covariance and pay for that design
-on static panels, filling the lower ranks. A library default is a bet on
-a measure.
+on static panels, filling the lower ranks, which seems fair enough. The upshot is that
+a library default is really a bet on a measure, whether or not the author meant it that way.
 
 \begin{figure}[p]
 \centering
@@ -557,40 +568,40 @@ diagonal loading erases.
 
 A survey of prominent covariance-method claims across further fields
 yields a docket for the next round, kept beside this paper. Sorting it
-teaches a taxonomy. Claims that impose structure on the truth are
-ensemble-relative; theorems about Wishart sampling noise hold for every
-true covariance and cannot flip.
+actually teaches a taxonomy of its own. Claims that impose structure on the truth are
+ensemble-relative; theorems about Wishart sampling noise, on the other hand, hold for
+every true covariance and simply cannot flip.
 
-The structural claims are the audit targets. \citet{paz2015} taper clustering-statistic covariances and presume banded truth;
+The structural claims are naturally the audit targets. \citet{paz2015} taper clustering-statistic covariances and presume banded truth;
 \citet{padmanabhan2016} estimate sparse cosmological precisions and
 presume a sparse graph. \citet{zhang2005} select gene-network
-powers by a scale-free-topology criterion that is itself a statement
-about the generating measure of gene correlation matrices. \citet{smith2011} demonstrated the win of partial over full correlation for network
+powers by a scale-free-topology criterion that is itself, whether or not the authors framed it this way,
+a statement about the generating measure of gene correlation matrices. \citet{smith2011} demonstrated the win of partial over full correlation for network
 detection on sparse simulated networks. \citet{norberg2009} judged
-jackknife covariances for galaxy surveys, and the verdict hinges on
+jackknife covariances for galaxy surveys, and the verdict there hinges on
 cross-region correlation structure.
 
-A second strand turns on spectral shape. Rule~N \citep{preisendorfer1988}
+A second strand turns on spectral shape instead. Rule~N \citep{preisendorfer1988}
 truncates EOFs through the eigenvalue spacing law. \citet{ledoit2012} derive the edge of nonlinear over linear shrinkage from spectral
 dispersion; \citet{fan2013} build POET on pervasive
 factors plus sparse residuals; \citet{frank1993} show the
 PLS-versus-PCR contest turning on how the coefficient vector aligns with
-the predictor eigenstructure. Each carries a predicted flip.
+the predictor eigenstructure. Each of these, in our view, carries a predicted flip waiting to be checked.
 
-The invariant theorems serve as null controls. \citet{hartlap2007}
+The invariant theorems serve as null controls, and we lean on them deliberately. \citet{hartlap2007}
 debias the inverse sample covariance exactly, for every
 true covariance; \citet{dodelson2013} derive a
 parameter-variance inflation that depends only on counts; \citet{sellentin2016} marginalize the estimated covariance exactly under
 Wishart sampling; \citet{lowry1992} prove the MEWMA chart depends on
-a known covariance only through a noncentrality parameter. An audit
+a known covariance only through a noncentrality parameter. Put simply, an audit
 pipeline that finds ensemble-dependence in the Hartlap factor has a bug,
 so we ran that control: with one fixed covariance per ensemble and four
 hundred panels at $(n,T)=(30,60)$, the trace of the raw average inverse
 sample covariance overshoots the true inverse trace by a factor of
 $2.07$ to $2.13$ under every ensemble, against the Wishart factor
 $(T-1)/(T-n-2)=2.11$, and the corrected ratio is $0.98$ to $1.01$
-everywhere. The pipeline reports no ensemble-dependence where none can
-exist. The most instructive failures are invariant theorems wrapped in
+everywhere. Good -- the pipeline reports no ensemble-dependence where none can
+exist. If anything, the most instructive failures are invariant theorems wrapped in
 ensemble-relative plug-in practice, as when those corrections are
 applied to shrunk or tapered estimates whose distribution is no longer
 Wishart.
