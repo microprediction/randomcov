@@ -486,6 +486,20 @@ program keeps exact use of the full covariance regardless of $n$. So a
 claim's home-turf verdict is not guaranteed to survive scale. And, as we
 just saw, a low rep count is not guaranteed to survive a check either.
 
+So we went looking for more of the same. At $n=3000$, $T/n=2$, three
+literature ensembles sit within $2\%$ of the clip/raw$=1$ threshold on
+the twelve-draw grid: \texttt{spectrum} ($0.996$), \texttt{kernel}
+($1.017$), \texttt{archakov\_hansen} ($1.020$) -- closer calls than HRP's
+\texttt{ar1} ever was. A forty-eight-draw check confirms all three
+(medians $0.996$, $1.018$, $1.021$; no range wider than $[0.98,
+1.06]$).\footnote{\texttt{clip\_n3000\_replication.py}, beside this
+paper, same seeding scheme as the HRP check.} Nothing moves. The
+difference from HRP is the statistic itself: a Frobenius-norm ratio has
+almost no per-draw variance, while HRP's long-only optimizer clearly
+does, so twelve draws are trustworthy for one and not for the other. The
+fragility we found is a property of the audit, not of small rep counts
+in general.
+
 Five of the fifteen ensembles turn numerically rank-deficient at the
 largest dimensions tested and need a positive-semidefinite floor before
 any audit runs: three package-native curiosities (\texttt{walk} on

@@ -44,10 +44,17 @@ between $n=30$ and $n=3000$ at $T/n=2$. The grid's 12-rep `ar1` cell at
 $n=3000$ also read as a flip (median 1.259) but did not replicate: a
 targeted 48-rep follow-up (`hrp_n3000_replication.py`) put the median
 back at 0.914 with 56% of draws still favoring HRP — the 12-rep estimate
-was noise, not a scale effect. Written up in the paper's "The audits at
-scale" section. The $n=1000$ and $n=3000$ passes took 778 and 898
-worker-minutes respectively; CV glasso is dropped at $n=3000$ (a single
-fit runs past the hour).
+was noise, not a scale effect. A second follow-up
+(`clip_n3000_replication.py`) checked whether the same fragility applies
+to `clip`'s three near-threshold literature ensembles at $n=3000, T/n=2$
+(`spectrum` 0.996, `kernel` 1.017, `archakov_hansen` 1.020, all within 2%
+of the flip line) — it doesn't: 48 reps land within $[0.98, 1.06]$ of the
+12-rep medians for all three. A Frobenius-norm ratio has far less
+per-draw variance than HRP's long-only optimizer, so the grid's 12 reps
+were trustworthy there even at the threshold. Written up in the paper's
+"Do claims scale?" section. The $n=1000$ and $n=3000$ passes took 778
+and 898 worker-minutes respectively; CV glasso is dropped at $n=3000$ (a
+single fit runs past the hour).
 
 The full results assemble into the audit matrix (`audit_matrix.py` ->
 `matrix.pdf`/`matrix.png`): claims x ensembles, colored by verdict, with
