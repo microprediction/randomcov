@@ -180,8 +180,9 @@ $T=60$ except where the claim's own regime dictates otherwise.
 
 \paragraph{Finance.} We start here because it is the field we know best.
 \citet{lopezdeprado2016} reports that hierarchical
-risk parity delivers lower out-of-sample variance than quadratic minimum
-variance, and names estimation error in the inverse as the culprit. We
+risk parity delivers lower out-of-sample variance than a long-only,
+fully-invested quadratic minimum-variance optimizer, and names estimation
+error in the inverse as the culprit. We
 build both portfolios from the same sample covariance and score the true
 variance $w^{\top}\Sigma w$ under the generating covariance. Column~1 of
 Table~\ref{tab:audits} gives the median ratio of HRP to long-only minimum
@@ -257,8 +258,10 @@ rather than in index order. Localization requires locality in the
 coordinates the taper can see.
 
 \paragraph{Signal processing.} Diagonal loading is the standard repair
-for the sample-covariance MVDR beamformer in the snapshot-limited regime
-\citep{cox1987,carlson1988}. With $T=40$ snapshots, a
+for the sample-covariance MVDR beamformer: \citet{cox1987} derive it from a
+constraint on white-noise array gain, against sensor and steering
+perturbations, and \citet{carlson1988} tie it to covariance estimation error
+in the snapshot-limited regime. With $T=40$ snapshots, a
 random unit steering vector, the distortionless constraint, and loading
 $\delta=0.1\,\mathrm{tr}(\hat\Sigma)/n$, column~6 reports the median
 ratio of true output power, loaded over unloaded. The picture is genuinely mixed: loading halves the
@@ -344,16 +347,19 @@ same ensemble. This is a population property with no sampling noise, so a
 sound test should declare similarity about $5\%$ of the time. It is at or below nominal
 under \texttt{residuals}, \texttt{factor}, and \texttt{archakov\_hansen}
 ($0\%$), and declares independent matrices similar $100\%$ of the time
-under eleven of the fifteen ensembles. Note however that under \texttt{sparse\_precision}
+under eleven of the fifteen ensembles. \citet{cheverud2007} concede as much
+in passing: in practice the null of no shared structure ``is nearly always
+rejected.'' Note however that under \texttt{sparse\_precision}
 the mean skewers correlation between independent matrices is $0.97$,
 because near-diagonal matrices respond to any skewer with the skewer
 itself. This observation is not new. Indeed \citet{rohlf2017} raises this objection in general terms, anticipating the measurement here.
 
-\paragraph{Climatology.} \citet{north1982} warn that a leading EOF is untrustworthy when its
-eigenvalue sampling error $\lambda\sqrt{2/T}$ is comparable to the gap to the
-next eigenvalue. In practice the rule is read in the other direction, as a
-licence to trust a well-separated leading EOF, and it is that reading we
-score. Where does this work? We score the
+\paragraph{Climatology.} \citet{north1982} give a rule of thumb: when an eigenvalue's sampling error
+$\lambda\sqrt{2/T}$ is comparable to the spacing to a neighbor, the sampling
+error in the associated EOF is comparable to the neighboring EOF. They draw
+the converse as a first-order corollary --- a stand-out eigenvalue has small
+EOF sampling error --- while saying plainly that the rule offers no guidance
+on where to truncate. It is the corollary we score. Where does this work? We score the
 false-reassurance rate, which is to say that among draws the rule declares separated, we look at how
 often the leading sample eigenvector is mostly wrong (squared
 alignment with the truth below one half). The rate is $0\%$ under six
