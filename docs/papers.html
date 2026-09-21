@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>randomcov — papers</title>
+  <meta name="description" content="Papers written with randomcov: the ensemble-relativity audit of covariance-method claims across eleven fields, and the correlation inflation note." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="randomcov" />
+  <meta property="og:title" content="randomcov — papers" />
+  <meta property="og:description" content="Eleven audited covariance-method claims from eleven fields, and what happens to each when the ensemble changes." />
+  <meta property="og:url" content="https://randomcov.microprediction.org/papers.html" />
+  <link rel="stylesheet" href="./academic.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="/">randomcov</a>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/#gallery">Gallery</a>
+        <a href="/#generators">Generators</a>
+        <span class="menu" tabindex="0"><span class="menu-label">Papers &#9662;</span>
+          <span class="drop">
+            <a href="/papers.html">All papers</a>
+            <a href="https://github.com/microprediction/randomcov/blob/main/papers/measure_audit/main.pdf">Ensemble-relative claims (PDF)</a>
+            <a href="https://github.com/microprediction/randomcov/blob/main/papers/measure_audit/DOCKET.md">The audit docket</a>
+            <a href="https://github.com/microprediction/home/blob/main/workingpapers/CorrelationInflation.pdf">Correlation inflation (PDF)</a>
+          </span>
+        </span>
+        <a href="https://github.com/microprediction/randomcov">GitHub</a>
+        <a href="https://pypi.org/project/randomcov/">PyPI</a>
+        <a href="https://winning.microprediction.org/">winning</a>
+      </nav>
+    </div>
+  </header>
+<main>
+  <h1>Papers</h1>
+  <p class="subtitle">What the named ensembles were built to measure, and what
+  they found.</p>
+
+  <h2>The audit</h2>
+  <div class="panel">
+    <p><strong><a href="https://github.com/microprediction/randomcov/blob/main/papers/measure_audit/main.pdf">Covariance-Method
+    Claims Are Ensemble-Relative: Named Measures and an Audit Program</a></strong></p>
+    <p class="ref">Peter Cotton &middot; August 2026 &middot; preprint &middot;
+      <a href="https://github.com/microprediction/randomcov/blob/main/papers/measure_audit/main.pdf">PDF</a> &middot;
+      <a href="https://github.com/microprediction/randomcov/blob/main/papers/measure_audit/main.tex">LaTeX</a> &middot;
+      <a href="https://github.com/microprediction/randomcov/tree/main/papers/measure_audit">seeded scripts</a></p>
+    <p>A claim about a covariance or correlation method is a claim about a
+    distribution over matrices, and the distribution is rarely stated. Across
+    fifteen named, seeded ensembles at identical dimension and sample size the
+    Ledoit&ndash;Wolf shrinkage intensity ranges from $0.07$ to $0.86$, and
+    eleven audited claims from eleven fields &mdash; shrinkage, hierarchical
+    risk parity, eigenvalue clipping, kriging screening, parallel analysis,
+    covariance localization, diagonal loading, the graphical lasso, random
+    skewers, North's rule, the Mantel test &mdash; flip verdict as the ensemble
+    changes, each for a stated structural reason. The results assemble into a
+    matrix of claims against measures; a joint leaderboard of scikit-learn and
+    <code>precise</code> estimators has five different winners.</p>
+    <p>The pattern survives scale. Seven claims re-run from $n=30$ to $n=3000$
+    keep their verdict in six cases; the seventh, hierarchical risk parity,
+    flips under its own home-turf ensemble as dimension grows. Ensemble-invariant
+    theorems are run as null controls: the Hartlap factor comes back at
+    $0.98$&ndash;$1.01$ under every ensemble, which is what a working pipeline
+    must report.</p>
+  </div>
+
+  <h2>Working notes</h2>
+  <div class="panel">
+    <p><strong><a href="https://github.com/microprediction/randomcov/blob/main/papers/measure_audit/DOCKET.md">The
+    audit docket</a></strong></p>
+    <p class="ref">Kept beside the paper &middot; updated as audits land</p>
+    <p>Prominent covariance-method claims from astronomy, climate, ecology,
+    genomics, neuroscience, chemometrics and econometrics, each classified
+    before it is audited: claims that impose structure on the truth are
+    ensemble-relative and can flip; theorems about Wishart sampling noise hold
+    for every true covariance and serve as controls. Finding ensemble-dependence
+    in a control means the pipeline has a bug.</p>
+  </div>
+
+  <div class="panel">
+    <p><strong><a href="https://github.com/microprediction/home/blob/main/workingpapers/CorrelationInflation.pdf">Correlation
+    Inflation</a></strong></p>
+    <p class="ref">Peter Cotton &middot; working paper &middot;
+      <a href="https://github.com/microprediction/home/blob/main/workingpapers/CorrelationInflation.pdf">PDF</a></p>
+    <p>An example of the kind of claim the ensembles exist to test: how
+    estimated correlations inflate, and under which generating measures the
+    effect is large enough to matter.</p>
+  </div>
+
+  <h2>Reproducing</h2>
+  <p>Every number in the audit comes from a seeded script beside the paper
+  (<code>*_sweep.py</code>), and every ensemble is one line of this package:</p>
+  <pre><code>pip install randomcov
+
+from randomcov import random_correlation_matrix
+C = random_correlation_matrix(n=300, corr_method="hierarchical", corr_kwargs={"rng": 7})</code></pre>
+  <p>The paper compiles on every push (<a href="https://github.com/microprediction/randomcov/blob/main/.github/workflows/paper.yml">paper.yml</a>),
+  which checks the build for unresolved references, undefined citations and
+  duplicate labels rather than trusting one laptop.</p>
+</main>
+  <footer>
+    <a href="https://github.com/microprediction/randomcov">Source</a> &middot;
+    Part of the <a href="https://repos.microprediction.org/">microprediction family</a> &middot;
+    Authored by <a href="https://home.microprediction.org/">Peter Cotton</a>.
+  </footer>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</body>
+</html>
