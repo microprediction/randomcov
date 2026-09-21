@@ -19,7 +19,7 @@ and should be re-verified before quoting. Completed audits live as
 | data assimilation (+cosmology) | Gaspari-Cohn localization repairs member-starved covariances (= Paz-Sanchez tapering) | Houtekamer-Mitchell 2001; Hamill et al. 2001; Paz-Sanchez 2015 | `localization_sweep.py` |
 | signal processing | diagonal loading robustifies the MVDR beamformer | Cox-Zeskind-Owen 1987; Carlson 1988 | `mvdr_sweep.py` |
 | graphical modeling (+genomics, neuro, cosmology) | sparsity prior beats shrinkage for the precision matrix | Friedman et al. 2008; Schafer-Strimmer 2005; Smith et al. 2011; Padmanabhan et al. 2016 | `glasso_sweep.py` |
-| statistics (minor) | constant-correlation vs identity shrinkage target | Ledoit-Wolf 2003 vs 2004 | `target_sweep.py` |
+| statistics (minor) | constant-correlation vs identity shrinkage target | Ledoit-Wolf 2004 (JPM) vs 2004 (JMVA) | `target_sweep.py` |
 | evolutionary biology | random skewers detect matrix similarity | Cheverud 1996; Rohlf 2017 critique | `skewers_sweep.py` |
 | climatology | North's rule certifies EOF separation | North et al. 1982 | `north_sweep.py` |
 | ecology | Mantel test holds its nominal level | Mantel 1967; Guillot-Rousset 2013 | `mantel_sweep.py` |

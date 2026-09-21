@@ -1,6 +1,6 @@
 """Seeded sweep behind the shrinkage-target table: oracle linear shrinkage
 toward the scaled-identity target versus the constant-correlation target
-(Ledoit-Wolf 2004 vs 2003), by named ensemble at fixed (n, T).
+(Ledoit-Wolf 2004 JMVA vs 2004 JPM), by named ensemble at fixed (n, T).
 
 For each draw and each target F the oracle intensity
 delta* = <Sigma - S, F - S> / ||F - S||^2 (clipped to [0, 1]) is applied and

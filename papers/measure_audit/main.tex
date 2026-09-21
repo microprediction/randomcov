@@ -83,11 +83,12 @@ matrices and bias the evaluation of statistical techniques, and propose a
 better one. \citet{marti2020} learns a generator from financial
 correlation matrices and reports, in accompanying experiments, that the
 HRP advantage fades on matrices without hierarchical
-structure.\footnote{\texttt{gmarti.gitlab.io/qfin/2019/12/04/hierarchical-risk-parity-part-3.html}}
-\citet{papenbrock2021} evolve synthetic correlations to ask which market
-regimes favor which allocator. \citet{alvarez2014} document the Bayesian
-mirror image: posterior conclusions about a covariance track the prior
-family placed on it.
+structure, a result restated in \citet{marti2021}.
+\citet{papenbrock2021} evolve synthetic correlations to ask which
+correlation structures favor which allocator. \citet{alvarez2014} document the Bayesian
+mirror image: an inverse-Wishart prior biases the posterior variance upward
+and the correlation toward zero when the true variance is small relative to
+the prior mean, and the bias persists as the sample grows.
 
 What the present paper adds is the instrument and the audits: a fixed
 battery of fifteen named, seeded, public measures; the re-execution of
@@ -194,9 +195,10 @@ minimum variance the losses grow by many more orders of magnitude: under
 \texttt{walk} the median ratio is $\sim\!10^{8.7}$, because near-singular
 ensembles admit near-perfect hedges that only signed weights can reach.
 
-\paragraph{Econophysics.} \citet{laloux1999} flatten the eigenvalues
-of the sample correlation that fall below the Marchenko--Pastur edge
-$(1+\sqrt{n/T})^{2}$ and report a cleaner matrix. Column~2 gives the
+\paragraph{Econophysics.} \citet{laloux1999} find the bulk of the sample correlation spectrum
+indistinguishable from Marchenko--Pastur noise; the cleaning recipe that
+follows --- flatten every eigenvalue below the edge $(1+\sqrt{n/T})^{2}$
+and report a cleaner matrix --- is \citet{laloux2000}. Column~2 gives the
 Frobenius-loss ratio of clipped to raw sample correlation. We observe that this ``cleaning'' is
 excellent under \texttt{sparse\_precision} ($0.30$) and
 \texttt{hierarchical} ($0.76$), where the true spectrum really is spikes
@@ -219,9 +221,10 @@ is mixing Mat\'ern with squared-exponential fields and for the smooth draws
 interpolation is nearly deterministic from all sites, but not from five.
 Thus we see that Stein's own caveat, that screening depends on smoothness, plays out.
 
-\paragraph{Psychometrics.} \citet{horn1965} retains the components whose
-sample eigenvalues exceed the corresponding 95th-percentile eigenvalue of
-independent data of the same shape; parallel analysis is the standard
+\paragraph{Psychometrics.} Parallel analysis \citep{horn1965} retains the components whose sample
+eigenvalues exceed those of independent data of the same shape --- Horn
+compared against the mean null eigenvalue, and we use the now-standard
+95th-percentile form of \citet{glorfeld1995}; it is the standard
 answer to ``how many factors?'' Column~4 gives the mean retained count:
 $1.8$ under \texttt{sparse\_precision} to $7.3$ under \texttt{onion} at
 identical $(n,T)$ -- more than a fourfold spread for what is supposed to
@@ -236,8 +239,11 @@ is, in part, a property of the generating measure its data happen to resemble.
 \paragraph{Data assimilation.} Ensemble Kalman filtering runs
 member-starved, so to speak, and the standard way of dealing with this is covariance localization. In other words we
 taper the sample covariance entrywise with a Gaspari--Cohn function \citep{gaspari1999} of inter-variable distance
-\citep{houtekamer2001,hamill2001}. Similarly, \citet{paz2015} arrived at very much the same approach for
-correlation-function bins, so this audit applies to both fields. With $N=20$ members for $n=30$ variables and a
+\citep{houtekamer2001,hamill2001}. \citet{paz2015} apply the closely related covariance tapering of
+\citet{kaufman2008} to correlation-function bins, with a Wendland taper and a
+two-taper precision estimator; the assumption both share --- that the taper
+coordinate carries the truth's locality --- is what this audit tests, so it
+applies to both fields. With $N=20$ members for $n=30$ variables and a
 taper of index distance with half-radius $6$, column~5 reports the
 Frobenius-loss ratio of tapered to raw. The split is interpretable. Localization helps wherever the
 estimate is noisy and the truth carries no long-range structure in taper
@@ -263,14 +269,16 @@ is the hedge from the finance audit seen from the other side: under
 near-singular ensembles the beamformer's null-steering lives in the
 smallest eigenvalues, which is exactly what loading erases.
 
-\paragraph{Graphical modeling.} \citet{friedman2008} attach to the graphical lasso the promise that a sparsity prior on the
-precision matrix improves estimation. The same promise underwrites
-gene-network inference \citep{schafer2005}, partial-correlation
-connectomes \citep{smith2011}, and sparse cosmological precision matrices
+\paragraph{Graphical modeling.} The graphical lasso of \citet{friedman2008} made the sparsity prior on the
+precision matrix cheap enough to be routine --- their own claim is speed, not
+accuracy --- and the field attached to it the promise that the prior improves
+estimation. That promise underwrites partial-correlation connectomes
+\citep{smith2011} and sparse cosmological precision matrices
 \citep{padmanabhan2016}. Column~7
 reports the Frobenius loss of the cross-validated glasso precision
 against the true precision, relative to inverting a Ledoit--Wolf
-shrinkage estimate. And indeed we see this. The sparsity prior wins clearly where precisions are
+shrinkage estimate of the kind \citet{schafer2005} recommend for gene
+networks. And indeed we see this. The sparsity prior wins clearly where precisions are
 genuinely sparse or banded (\texttt{sparse\_precision} $0.63$,
 \texttt{hierarchical} $0.68$, \texttt{ar1} $0.70$), ties across the dense
 elliptope middle. But it loses under \texttt{residuals} and \texttt{factor}
@@ -320,8 +328,8 @@ column's verdict flips across rows.}\label{tab:audits}
 \end{table}
 
 We also performed a smaller companion study. With oracle shrinkage intensities, the
-constant-correlation target of \citet{ledoit2003} beats their
-scaled-identity target \citep{ledoit2004} on every draw under \texttt{sparse\_precision}
+constant-correlation target of \citet{ledoit2004honey} beats the
+scaled-identity target of \citet{ledoit2004} on every draw under \texttt{sparse\_precision}
 (median loss ratio $0.62$) and loses on nineteen of twenty draws under
 \texttt{residuals}. Even the choice between two targets from the same
 authors is ensemble-relative!
@@ -333,7 +341,7 @@ covariance matrices similar when their mean response-vector correlation
 under common random selection gradients exceeds the null for independent
 random vectors. We apply the test to independent pairs drawn from the
 same ensemble. This is a population property with no sampling noise, so a
-sound test should declare similarity about $5\%$ of the time. It does so
+sound test should declare similarity about $5\%$ of the time. It is at or below nominal
 under \texttt{residuals}, \texttt{factor}, and \texttt{archakov\_hansen}
 ($0\%$), and declares independent matrices similar $100\%$ of the time
 under eleven of the fifteen ensembles. Note however that under \texttt{sparse\_precision}
@@ -341,9 +349,11 @@ the mean skewers correlation between independent matrices is $0.97$,
 because near-diagonal matrices respond to any skewer with the skewer
 itself. This observation is not new. Indeed \citet{rohlf2017} raises this objection in general terms, anticipating the measurement here.
 
-\paragraph{Climatology.} \citet{north1982} declare a leading EOF
-trustworthy when its eigenvalue sampling error $\lambda\sqrt{2/T}$ is
-smaller than the gap to the next eigenvalue. Where does this work? We score the
+\paragraph{Climatology.} \citet{north1982} warn that a leading EOF is untrustworthy when its
+eigenvalue sampling error $\lambda\sqrt{2/T}$ is comparable to the gap to the
+next eigenvalue. In practice the rule is read in the other direction, as a
+licence to trust a well-separated leading EOF, and it is that reading we
+score. Where does this work? We score the
 false-reassurance rate, which is to say that among draws the rule declares separated, we look at how
 often the leading sample eigenvector is mostly wrong (squared
 alignment with the truth below one half). The rate is $0\%$ under six
@@ -356,7 +366,7 @@ where spectra are quasi-degenerate.
 
 \paragraph{Ecology.} \citet{guillot2013} report that the Mantel test
 \citep{mantel1967} rejects independence between distance matrices at $25$--$55\%$ under
-spatially autocorrelated fields, at nominal $5\%$. Our audit puts the
+strong spatial autocorrelation, at nominal $5\%$. Our audit puts the
 original claim and the critique on the same footing (two independent site
 variables drawn with covariance $C$ with Euclidean distance matrices and $499$
 label permutations). The realized type-I error is the nominal $5\%$ under
@@ -586,26 +596,32 @@ actually teaches a taxonomy of its own. Claims that impose structure on the trut
 ensemble-relative; theorems about Wishart sampling noise, on the other hand, hold for
 every true covariance and simply cannot flip.
 
-The structural claims are naturally the audit targets. \citet{paz2015} taper clustering-statistic covariances and presume banded truth;
+The structural claims are naturally the audit targets. \citet{paz2015} taper clustering-statistic covariances --- explicitly
+declining to assume the far off-diagonal entries are negligible, though the
+taper still presumes the bin coordinate carries the locality;
 \citet{padmanabhan2016} estimate sparse cosmological precisions and
 presume a sparse graph. \citet{zhang2005} select gene-network
 powers by a scale-free-topology criterion that is itself, whether or not the authors framed it this way,
 a statement about the generating measure of gene correlation matrices. \citet{smith2011} demonstrated the win of partial over full correlation for network
-detection on sparse simulated networks. \citet{norberg2009} judged
+detection on sparse simulated networks, and report the ordering reversing at
+fifty nodes. \citet{norberg2009} judged
 jackknife covariances for galaxy surveys, and the verdict there hinges on
 cross-region correlation structure.
 
 A second strand turns on spectral shape instead. Rule~N \citep{preisendorfer1988}
-truncates EOFs through the eigenvalue spacing law. \citet{ledoit2012} derive the edge of nonlinear over linear shrinkage from spectral
-dispersion; \citet{fan2013} build POET on pervasive
+truncates EOFs by comparing sample eigenvalues against the null spectrum of
+independent data of the same shape, which is to say against an ensemble. \citet{ledoit2012} show the edge of nonlinear over linear shrinkage growing
+with spectral dispersion; \citet{fan2013} build POET on pervasive
 factors plus sparse residuals; \citet{frank1993} show the
-PLS-versus-PCR contest turning on how the coefficient vector aligns with
-the predictor eigenstructure. Each of these, in our view, carries a predicted flip waiting to be checked.
+PCR-and-PLS-versus-ridge contest turning on whether the true coefficient
+vector aligns with the high-spread directions of the predictor
+eigenstructure. Each of these, in our view, carries a predicted flip waiting to be checked.
 
 The invariant theorems serve as null controls, and we lean on them deliberately. \citet{hartlap2007}
 debias the inverse sample covariance exactly, for every
 true covariance; \citet{dodelson2013} derive a
-parameter-variance inflation that depends only on counts; \citet{sellentin2016} marginalize the estimated covariance exactly under
+parameter-variance inflation that, in the Gaussian limit, depends only on
+counts; \citet{sellentin2016} marginalize the estimated covariance exactly under
 Wishart sampling; \citet{lowry1992} prove the MEWMA chart depends on
 a known covariance only through a noncentrality parameter. Put simply, an audit
 pipeline that finds ensemble-dependence in the Hartlap factor has a bug,
