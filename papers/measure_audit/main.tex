@@ -569,13 +569,15 @@ easily rank whole libraries. We fit the six covariance estimators of scikit-lear
 eleven batch-applicable estimators of \texttt{precise} to the same twenty
 seeded panels per ensemble and rank them by median relative Frobenius
 loss against the generating covariance (Figure~\ref{fig:ranking}). Five
-estimators take first place somewhere: Ledoit--Wolf on four ensembles,
-OAS and fixed shrinkage and the graphical lasso on three each, and,
-perhaps surprisingly, the raw sample covariance on \texttt{animals} and \texttt{kernel}, the two
-ensembles the intensity table already marked as wanting almost no
-shrinkage. The graphical lasso is first on the three
-precision-structured rows and tenth or worse under \texttt{animals},
-\texttt{residuals}, and \texttt{factor} -- a big fall. The \texttt{precise}
+estimators take first place somewhere: OAS on four ensembles, fixed
+shrinkage and the graphical lasso on three each, Ledoit--Wolf on two, and,
+perhaps surprisingly, the raw sample covariance on \texttt{animals},
+\texttt{kernel} and \texttt{residuals} -- three of the ensembles the
+intensity table already marked as wanting almost no shrinkage. The
+graphical lasso is first on the three precision-structured rows
+(\texttt{sparse\_precision}, \texttt{ar1}, \texttt{hierarchical}) and
+twelfth of seventeen under \texttt{animals}, \texttt{residuals}, and
+\texttt{factor} -- a big fall. The \texttt{precise}
 estimators are built for time-varying covariance and pay for that design
 on static panels, filling the lower ranks, which seems fair enough. The upshot is that
 a library default is really a bet on a measure, whether or not the author meant it that way.
