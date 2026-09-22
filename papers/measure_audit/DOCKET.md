@@ -95,10 +95,20 @@ Papenbrock et al. 2021; Alvarez et al. 2014).
 
 ### Genomics / neuroscience / chemometrics
 - **Zhang-Horvath 2005** WGCNA scale-free topology criterion: fraction of
-  draws where R^2 > 0.8 is achievable at all, and module recovery at the
-  criterion-selected power, by ensemble.
+  draws where the criterion is satisfiable at all, and module recovery at the
+  criterion-selected soft-thresholding power, by ensemble. Read the criterion
+  from the source before auditing it: the index is the *signed* scale-free fit
+  R^2 (negated when the log-log slope is positive), the authors offer
+  "e.g. signed R^2 > 0.80" as an example cutoff rather than a rule, and they
+  pair it with two further conditions — high mean connectivity and a slope
+  near -1. They also decline to make it an optimization problem ("we are
+  hesitant... noise affects the relationship between R^2 and the AF
+  parameters") and report using 0.95 and 0.85 in their own two applications.
+  An audit that scores a bare "R^2 > 0.8" is auditing the folklore, not the
+  paper — which may be the point, but say which.
 - **Smith et al. 2011** netsim: partial correlation beats full correlation for
-  edge detection — demonstrated on sparse DCM networks; expect flips on
+  edge detection — demonstrated on sparse DCM networks, and they already report
+  the ordering reversing at fifty nodes; expect flips on
   factor/equicorr ensembles. (Partially covered by `glasso_sweep.py`.)
 - **Bulik-Sullivan et al. 2015** LD score regression intercept: non-unit
   intercepts without confounding under block/hierarchical LD (stylized audit
