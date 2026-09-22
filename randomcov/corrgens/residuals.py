@@ -36,6 +36,13 @@ def residuals_corr(n, noise=0.1, rng=None):
     # fits a different half of the sample, so the models differ and their
     # out-of-sample errors are genuine estimation error. The test targets stay
     # noiseless: shared test noise would swamp everything (mean |rho| -> 0.99).
+    #
+    # Note the ensemble is intrinsically low rank, and no choice of noise
+    # changes that. Every error vector is y_test - X_test @ beta_hat_i, whose
+    # only varying part lies in the column span of X_test, so all n of them sit
+    # in an (m+1)-dimensional space with m = int(sqrt(n+10)). At n=30 that is
+    # rank 6, and the matrix needs the positive-semidefinite floor. Audits that
+    # invert it are therefore reading that floor, much as they do for `walk`.
     y = signal + noise * signal.std() * rng.standard_normal(N)
 
     # Step 5: Make predictions out of sample (generate more true X)

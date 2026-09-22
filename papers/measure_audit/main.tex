@@ -125,21 +125,21 @@ We begin by looking at the well known Ledoit-Wolf shrinkage estimator because th
 \toprule
 ensemble & intensity & sd \\
 \midrule
-animals & $0.072$ & $0.013$ \\
-residuals & $0.096$ & $0.012$ \\
-factor & $0.101$ & $0.038$ \\
-archakov\_hansen & $0.120$ & $0.022$ \\
-kernel & $0.132$ & $0.082$ \\
-walk & $0.199$ & $0.038$ \\
-block\_equicorr & $0.247$ & $0.096$ \\
-lkj & $0.346$ & $0.031$ \\
-vine & $0.355$ & $0.022$ \\
-onion & $0.363$ & $0.030$ \\
-hierarchical & $0.369$ & $0.070$ \\
-ar1 & $0.469$ & $0.226$ \\
-wishart & $0.506$ & $0.032$ \\
-spectrum & $0.532$ & $0.058$ \\
-sparse\_precision & $0.862$ & $0.066$ \\
+residuals & $0.072$ & $(0.019)$ \\
+animals & $0.072$ & $(0.013)$ \\
+factor & $0.101$ & $(0.038)$ \\
+archakov\_hansen & $0.120$ & $(0.022)$ \\
+kernel & $0.132$ & $(0.082)$ \\
+walk & $0.199$ & $(0.038)$ \\
+block\_equicorr & $0.247$ & $(0.096)$ \\
+vine & $0.355$ & $(0.022)$ \\
+lkj & $0.363$ & $(0.024)$ \\
+onion & $0.363$ & $(0.030)$ \\
+hierarchical & $0.369$ & $(0.070)$ \\
+ar1 & $0.469$ & $(0.226)$ \\
+wishart & $0.506$ & $(0.032)$ \\
+spectrum & $0.532$ & $(0.058)$ \\
+sparse\_precision & $0.862$ & $(0.066)$ \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -192,9 +192,14 @@ the ensembles whose dependency structure the bisection tree can match; it
 loses by an order of magnitude or more under \texttt{animals},
 \texttt{factor}, and \texttt{archakov\_hansen}, where the true matrix
 rewards positions a long-only tree simply cannot take. Against unconstrained
-minimum variance the losses grow by many more orders of magnitude: under
-\texttt{walk} the median ratio is $\sim\!10^{8.7}$, because near-singular
-ensembles admit near-perfect hedges that only signed weights can reach.
+minimum variance the losses grow by many more orders of magnitude: the
+median ratio is $\sim\!10^{8.7}$ under \texttt{walk} and $\sim\!10^{11.2}$
+under \texttt{residuals}, because near-singular ensembles admit
+near-perfect hedges that only signed weights can reach. Both of those
+ensembles reach the positive-semidefinite floor, so the exponent is partly
+a statement about the floor: it scales inversely with the clip, and a
+looser clip moves it down decade for decade. The direction is a property
+of the ensemble; the magnitude is not.
 
 \paragraph{Econophysics.} \citet{laloux1999} find the bulk of the sample correlation spectrum
 indistinguishable from Marchenko--Pastur noise; the cleaning recipe that
@@ -202,11 +207,17 @@ follows --- flatten every eigenvalue below the edge $(1+\sqrt{n/T})^{2}$
 and report a cleaner matrix --- is \citet{laloux2000}. Column~2 gives the
 Frobenius-loss ratio of clipped to raw sample correlation. We observe that this ``cleaning'' is
 excellent under \texttt{sparse\_precision} ($0.30$) and
-\texttt{hierarchical} ($0.76$), where the true spectrum really is spikes
-over a bulk. On the other hand it appears to damage the estimate under eleven of fifteen ensembles, worst, at
-$1.43$--$1.47$, under \texttt{animals}, \texttt{residuals},
-\texttt{kernel}, and \texttt{archakov\_hansen}, where genuine eigenvalue
-mass lives below the edge and is erased as noise. The recipe presumes signal
+\texttt{hierarchical} ($0.76$). The mechanism is not quite the textbook
+one. \texttt{hierarchical} does carry a spike over a bulk, but
+\texttt{sparse\_precision} carries none --- its largest true eigenvalue is
+$1.43$ against an edge of $2.91$ --- and clipping wins there because the
+sub-edge spectrum is nearly flat already, so flattening it costs almost
+nothing. What predicts the verdict is the dispersion of the true spectrum
+below the edge, not the presence of spikes above it. On the other hand
+clipping damages the estimate under eleven of fifteen ensembles, worst at
+$1.43$--$1.77$ under \texttt{animals}, \texttt{kernel},
+\texttt{archakov\_hansen}, and \texttt{residuals}, where the sub-edge mass
+is dispersed and is erased as noise. The recipe presumes signal
 means spikes. However in contrast, locality puts signal in the bulk. Picking the right tool for the right task is important.
 
 \paragraph{Geostatistics.} The screening effect of \citet{stein2002} says
@@ -215,11 +226,18 @@ full kriging variance. This is a population property, so no sampling is
 involved. Column~3 reports the median ratio of conditional variance given
 the best five predictors to conditional variance given all $n-1$.
 Screening holds essentially exactly under \texttt{ar1} (Markov, ratio
-$1.00$), \texttt{sparse\_precision}, \texttt{hierarchical}, and
-\texttt{block\_equicorr}. It fails several-fold under \texttt{onion} and
-\texttt{vine}, and under \texttt{kernel} itself ($5.7$). Here the ensemble
-is mixing Mat\'ern with squared-exponential fields and for the smooth draws
-interpolation is nearly deterministic from all sites, but not from five.
+$1.00$), \texttt{hierarchical}, and \texttt{block\_equicorr}. It also reads
+$1.00$ under \texttt{sparse\_precision}, but vacuously: conditioning on all
+$n-1$ neighbors removes only about four per cent of the variance there, so
+there is nothing for five neighbors to miss. It fails several-fold under the elliptope samplers \texttt{lkj},
+\texttt{onion} and \texttt{vine}, and under \texttt{kernel} itself ($5.7$).
+Every \texttt{kernel} draw is squared-exponential, whose spectral density
+decays faster than any algebraic rate and so falls outside Stein's
+conditions; interpolation is nearly deterministic from all sites but not
+from five. The failure tracks the drawn length scale almost perfectly
+(correlation $0.98$ between length scale and log ratio), and a Mat\'ern-3/2
+field on the identical point clouds gives $1.04$ instead --- which is
+Stein's caveat, reproduced as a contrast rather than assumed.
 Thus we see that Stein's own caveat, that screening depends on smoothness, plays out.
 
 \paragraph{Psychometrics.} Parallel analysis \citep{horn1965} retains the components whose sample
@@ -233,7 +251,7 @@ be an objective count. The same sweep scores the eigenvalue-greater-than-one rul
 eigenvalues above one. Kaiser over-extracts under \texttt{factor} ($5.7$
 retained against $3.0$ true), under-extracts under \texttt{wishart}
 ($11.2$ against $13.1$), and disagrees with parallel analysis by a factor
-that is itself ensemble-dependent: $1.2$ under \texttt{residuals}, $7$
+that is itself ensemble-dependent: $1.4$ under \texttt{residuals}, $7$
 under \texttt{sparse\_precision}. So the number of factors a study reports
 is, in part, a property of the generating measure its data happen to resemble.
 
@@ -284,8 +302,9 @@ shrinkage estimate of the kind \citet{schafer2005} recommend for gene
 networks. And indeed we see this. The sparsity prior wins clearly where precisions are
 genuinely sparse or banded (\texttt{sparse\_precision} $0.63$,
 \texttt{hierarchical} $0.68$, \texttt{ar1} $0.70$), ties across the dense
-elliptope middle. But it loses under \texttt{residuals} and \texttt{factor}
-($1.03$--$1.09$) covariance families. No mystery here. Dense low-rank structure is the worst case for
+elliptope middle. But it loses under \texttt{factor} ($1.09$), and under
+\texttt{residuals} it ties at $1.00$ while winning on none of the twenty
+draws. No mystery here. Dense low-rank structure is the worst case for
 sparsity.
 
 \begin{table}[t]
@@ -297,21 +316,21 @@ sparsity.
 ensemble & (fin.) & (econo.) & (geost.) & (psych.) & (assim.) & (sig.\
 proc.) & (graph.) \\
 \midrule
-animals & $8.4$ & $1.43$ & $5.5$ & $3.3$ & $1.66$ & $32.8$ & $1.00$ \\
-ar1 & $0.98$ & $1.20$ & $1.00$ & $4.5$ & $0.53$ & $0.48$ & $0.70$ \\
+animals & $8.38$ & $1.43$ & $5.53$ & $3.3$ & $1.66$ & $32.8$ & $1.00$ \\
+ar1 & $0.98$ & $1.20$ & $1.00$ & $4.5$ & $0.53$ & $0.48$ & $0.69$ \\
 archakov\_hansen & $71.8$ & $1.47$ & $131$ & $4.7$ & $1.41$ & $20.5$ & $1.00$ \\
 block\_equicorr & $1.09$ & $1.00$ & $1.04$ & $3.0$ & $1.00$ & $0.55$ & $0.78$ \\
 factor & $12.3$ & $1.38$ & $1.06$ & $2.2$ & $1.69$ & $0.94$ & $1.09$ \\
 hierarchical & $1.00$ & $0.76$ & $1.02$ & $2.3$ & $0.82$ & $0.45$ & $0.68$ \\
-kernel & $1.51$ & $1.46$ & $5.7$ & $4.1$ & $1.46$ & $136$ & $1.00$ \\
-lkj & $2.27$ & $1.22$ & $3.1$ & $6.5$ & $0.74$ & $0.87$ & $0.97$ \\
-onion & $2.83$ & $1.29$ & $9.0$ & $7.3$ & $0.78$ & $3.3$ & $1.00$ \\
-residuals & $5.36$ & $1.44$ & $4.8$ & $4.7$ & $1.71$ & $0.62$ & $1.03$ \\
+kernel & $1.51$ & $1.46$ & $5.69$ & $4.1$ & $1.46$ & $136$ & $1.00$ \\
+lkj & $2.67$ & $1.29$ & $10.6$ & $7.3$ & $0.79$ & $2.26$ & $0.99$ \\
+onion & $2.83$ & $1.29$ & $9.04$ & $7.3$ & $0.78$ & $3.29$ & $1.00$ \\
+residuals & $2.75$ & $1.77$ & $\sim\!10^{8.3}$ & $4.0$ & $1.84$ & $\sim\!10^{7.7}$ & $1.00$ \\
 sparse\_precision & $0.76$ & $0.30$ & $1.00$ & $1.8$ & $0.50$ & $0.48$ & $0.63$ \\
 spectrum & $1.11$ & $0.94$ & $1.32$ & $5.8$ & $0.66$ & $0.51$ & $0.99$ \\
-vine & $2.68$ & $1.29$ & $11.9$ & $7.0$ & $0.81$ & $4.1$ & $1.00$ \\
+vine & $2.68$ & $1.29$ & $11.9$ & $7.0$ & $0.81$ & $4.13$ & $1.00$ \\
 walk & $1.23$ & $1.11$ & $\sim\!10^{8.7}$ & $3.7$ & $1.14$ & $\sim\!10^{7.9}$ & $1.00$ \\
-wishart & $1.19$ & $1.04$ & $1.50$ & $6.5$ & $0.66$ & $0.51$ & $0.96$ \\
+wishart & $1.19$ & $1.04$ & $1.50$ & $6.5$ & $0.66$ & $0.51$ & $0.95$ \\
 \bottomrule
 \end{tabular}
 \caption{Seven audited claims about estimators and constructions; all
@@ -345,9 +364,9 @@ under common random selection gradients exceeds the null for independent
 random vectors. We apply the test to independent pairs drawn from the
 same ensemble. This is a population property with no sampling noise, so a
 sound test should declare similarity about $5\%$ of the time. It is at or below nominal
-under \texttt{residuals}, \texttt{factor}, and \texttt{archakov\_hansen}
-($0\%$), and declares independent matrices similar $100\%$ of the time
-under eleven of the fifteen ensembles. \citet{cheverud2007} concede as much
+under \texttt{factor} and \texttt{archakov\_hansen} ($0\%$) and
+\texttt{animals} ($10\%$), and declares independent matrices similar
+$100\%$ of the time under eleven of the fifteen ensembles. \citet{cheverud2007} concede as much
 in passing: in practice the null of no shared structure ``is nearly always
 rejected.'' Note however that under \texttt{sparse\_precision}
 the mean skewers correlation between independent matrices is $0.97$,
@@ -376,9 +395,9 @@ strong spatial autocorrelation, at nominal $5\%$. Our audit puts the
 original claim and the critique on the same footing (two independent site
 variables drawn with covariance $C$ with Euclidean distance matrices and $499$
 label permutations). The realized type-I error is the nominal $5\%$ under
-\texttt{onion} and \texttt{vine}, and $37$--$40\%$ under
-\texttt{residuals}, \texttt{factor}, \texttt{kernel}, and
-\texttt{animals}. This reproduces the published inflation under
+\texttt{onion} and \texttt{vine} (and $6\%$ under \texttt{lkj}), and
+$38$--$43\%$ under \texttt{factor}, \texttt{kernel}, \texttt{animals},
+and \texttt{residuals}. This reproduces the published inflation under
 locality-and-factor structure and shows calibration under dense elliptope
 measures. So in keeping with our theme, one could say ``the Mantel test is broken'' or ``the Mantel test is
 fine'' depending on which ensemble one chooses.
@@ -410,9 +429,9 @@ block\_equicorr & $100\%$ & $0\%$ & $15\%$ & $0.77$ \\
 factor & $0\%$ & $0\%$ & $38\%$ & $0.90$ \\
 hierarchical & $100\%$ & $0\%$ & $6\%$ & $0.78$ \\
 kernel & $100\%$ & $3\%$ & $39\%$ & $0.88$ \\
-lkj & $100\%$ & $22\%$ & $11\%$ & $0.58$ \\
+lkj & $100\%$ & $26\%$ & $6\%$ & $0.53$ \\
 onion & $100\%$ & $33\%$ & $5\%$ & $0.57$ \\
-residuals & $0\%$ & $0\%$ & $37\%$ & $0.79$ \\
+residuals & $95\%$ & $0\%$ & $43\%$ & $0.92$ \\
 sparse\_precision & $100\%$ & $100\%$ & $7\%$ & $0.42$ \\
 spectrum & $100\%$ & $10\%$ & $9\%$ & $0.52$ \\
 vine & $100\%$ & $33\%$ & $5\%$ & $0.55$ \\
@@ -495,9 +514,12 @@ automatically fine for all of them.
 
 \texttt{sparse\_precision} remains an outright HRP win at every scale we
 tested, and \texttt{ar1} remains close to a tie at every scale we
-tested. Only \texttt{hierarchical} genuinely flips, presumably because a fixed
-bisection increasingly coarsens nested-cluster structure that a
-thirty-asset tree can still track closely, while the long-only quadratic
+tested. Only \texttt{hierarchical} genuinely flips, and the cause is the
+ensemble rather than the algorithm: its cluster correlation is a function
+of absolute cluster size, so as $n$ grows the matrix thins toward plain
+equicorrelation --- its non-equicorrelation content falls fourfold from
+$n=30$ to $n=3000$, and the share of pairs correlated above $0.2$ falls a
+hundredfold. HRP's home turf evaporates under it, while the long-only quadratic
 program keeps exact use of the full covariance regardless of $n$. So a
 claim's home-turf verdict is not guaranteed to survive scale. And, as we
 just saw, a low rep count is not guaranteed to survive a check either.
@@ -591,7 +613,9 @@ fails, as when screening fails inside the kernel ensemble.
 cleaning, localization, and the graphical lasso at once, yet breaks
 random skewers and North's rule. The dense elliptope samplers
 (\texttt{lkj}, \texttt{onion}, \texttt{vine}) are kind to almost nothing
-except the Mantel test, and they are the most common default test bed.
+except Gaspari--Cohn localization, which delivers on all three
+($0.78$--$0.81$), and the Mantel test, which they hold at or near its
+nominal level; they are also the most common default test bed.
 The same mechanism recurs under different names: the hedge that
 unconstrained minimum variance exploits is the null-steering that
 diagonal loading erases.

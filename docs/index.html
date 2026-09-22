@@ -229,7 +229,7 @@ S = random_covariance_matrix(n=50, corr_method="hierarchical", var_method="logno
     <p>A perturbation random walk on the elliptope: symmetric noise added to a
     starting equicorrelation, projected back by nearest-correlation each step.
     Wanders toward the boundary — near-singular by design.</p>
-    <p class="ref">This package; nearest-correlation per Higham (2002).</p>
+    <p class="ref">This package; repaired by spectral clip and rescale (not Higham's nearest-correlation projection).</p>
   </div>
 
   <div class="method" id="animals">
