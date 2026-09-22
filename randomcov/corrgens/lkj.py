@@ -44,15 +44,17 @@ def lkj_cholesky(n, eta, rng=None):
     L[0, 0] = 1.0
 
     for i in range(1, n):
-        # Sample Beta distributed variable for the diagonal element
-        beta_param = eta + 0.5 * (n - i - 1)
-        ui = rng.beta(beta_param, beta_param)
-        L[i, i] = np.sqrt(ui)
+        # Squared norm of row i's off-diagonal part. LKJ (2009, Sec. 3.2):
+        # y_i ~ Beta(i/2, eta + (n - 1 - i)/2). The first shape depends on the
+        # row index; a symmetric Beta here makes eta inert and the law
+        # non-exchangeable.
+        y = rng.beta(0.5 * i, eta + 0.5 * (n - 1 - i))
+        L[i, i] = np.sqrt(1.0 - y)
 
         # Sample from the unit sphere for the off-diagonal elements
         vi = rng.standard_normal(i)
         vi_norm = np.linalg.norm(vi)
-        L[i, :i] = vi / vi_norm * np.sqrt(1 - ui)
+        L[i, :i] = vi / vi_norm * np.sqrt(y)
 
     return L
 

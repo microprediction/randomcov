@@ -8,11 +8,13 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 
 
-def residuals_corr(n, rng=None):
+def residuals_corr(n, noise=0.1, rng=None):
     # Use correlation between out of sample model errors
     # 1. Use wishart(m) to general latent_corr for m = int(math.sqrt(n+10))
     # 2. Generate X using latent_corr
     # 3. Generate random coefficients (a true linear model y = a0*X0 + a1*X1 etc
+    #    plus observation noise -- without it the fit is exact and the
+    #    "residuals" are floating-point rounding error
     # 4. Fit n different regression models but each time, remove half the sample randomly
     # 5. Make predictions out of sample (generate more true X)
     # 6. Compute the correlation between the model prediction errors
@@ -29,7 +31,12 @@ def residuals_corr(n, rng=None):
 
     # Step 3: Generate random coefficients (a true linear model y = a0*X0 + a1*X1 + ...)
     coefficients = rng.standard_normal(m)
-    y = X @ coefficients  # Compute true y values
+    signal = X @ coefficients
+    # Observation noise, as a fraction of the signal's own scale. Each model
+    # fits a different half of the sample, so the models differ and their
+    # out-of-sample errors are genuine estimation error. The test targets stay
+    # noiseless: shared test noise would swamp everything (mean |rho| -> 0.99).
+    y = signal + noise * signal.std() * rng.standard_normal(N)
 
     # Step 5: Make predictions out of sample (generate more true X)
     X_test = rng.multivariate_normal(mean=mean_vector, cov=latent_corr, size=N)
