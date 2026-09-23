@@ -101,8 +101,8 @@ theorems run as null controls.
 \texttt{randomcov} generates correlation matrices under fifteen named,
 seeded measures, and the names describe the constructions:
 \texttt{lkj}, \texttt{onion}, \texttt{vine} (elliptope samplers;
-\citealp{joe2006,lkj2009}); \texttt{wishart}, \texttt{spectrum} (spectral laws, including
-Marchenko--Pastur and spiked); \texttt{factor}, \texttt{hierarchical},
+\citealp{joe2006,lkj2009}); \texttt{wishart}, \texttt{spectrum}
+(prescribed spectral laws); \texttt{factor}, \texttt{hierarchical},
 \texttt{block\_equicorr} (low-rank and clustered structure); \texttt{ar1},
 \texttt{kernel} (banded and locality-driven fields);
 \texttt{sparse\_precision} (graphical-model structure);
@@ -116,16 +116,25 @@ can be crossed independently. Every generator accepts an explicit seed,
 and every number in this paper descends from one; there is no number
 here we cannot regenerate. The scripts sit beside the paper.
 
-\section{Demonstration: one estimator, twelve-fold spread}\label{sec:lw-demo}
+Three of the fifteen are constructions of one measure. \texttt{lkj},
+\texttt{onion} and \texttt{vine} each sample LKJ($\eta$) by a different
+route, and they agree: across the eleven audits below their verdicts match
+to within sampling noise, and they rank seventeen estimators in
+near-identical order. That agreement is a check on the instrument. When
+three routes to one law return one answer, a disagreement between laws is
+a property of the laws.
+
+\section{Two demonstrations}\label{sec:lw-demo}
 
 We begin with the Ledoit--Wolf shrinkage estimator because it is used
 across so many applications and because its diagnostic is easy to read:
 the intensity says how far the sample covariance should be pulled toward
 a target. Fix $n=30$ variables, each observed $T=60$ times, and draw
 twenty panels per ensemble. This is not close to the $n=T$ boundary, and
-the table below shows the variation anyway.
+Table~\ref{tab:lw} shows the variation anyway.
 
-\begin{center}\small
+\begin{table}[t]
+\centering\small
 \begin{tabular}{lcc}
 \toprule
 ensemble & intensity & sd \\
@@ -147,7 +156,9 @@ spectrum & $0.532$ & $(0.058)$ \\
 sparse\_precision & $0.862$ & $(0.066)$ \\
 \bottomrule
 \end{tabular}
-\end{center}
+\caption{Ledoit--Wolf shrinkage intensity by ensemble at $n=30$, $T=60$:
+mean and standard deviation over twenty seeded draws.}\label{tab:lw}
+\end{table}
 
 The intensity spans $0.072$ to $0.862$ at identical $(n,T)$. A paper
 reporting ``typical'' shrinkage from one generator is reporting a property
@@ -158,17 +169,15 @@ shrinkage, and near-unstructured draws (\texttt{wishart},
 standard deviation is informative too; \texttt{ar1} spans $0.23$ across
 its own parameter draws.
 
-\section{Demonstration: one algorithm, one failing ensemble}
-
-We pick on one of our own examples. A deterministic algorithm for multinomial probit choice probabilities (the
+The second demonstration is software of our own. A deterministic
+algorithm for multinomial probit choice probabilities (the
 \texttt{winning} package; paper in that repository) reports median
 absolute error by ensemble after fitting a structured covariance grammar.
-For twelve of the fifteen measures the error is $1$--$4\times10^{-5}$. For
+For twelve of the fifteen measures the error is $1$--$4\times10^{-5}$; for
 the dense, strongly correlated ensembles it is $1$--$4\times10^{-4}$, and
-under \texttt{kernel} fields it is $4\times10^{-3}$, because the fit does
-not yet admit the band-diagonal structure a kernel covariance calls for.
-
-A validation run on any single ensemble would have reported either
+under \texttt{kernel} fields $4\times10^{-3}$, because the fit does not
+yet admit the band-diagonal structure a kernel covariance calls for. A
+validation run on any single ensemble would have reported either
 ``essentially exact'' or ``inadequate,'' both correctly, for the same
 method. That experience was much of the motivation for writing the
 generator library.
@@ -178,9 +187,7 @@ generator library.
 The same brittleness might apply more broadly, and where it does there
 is room to improve existing tools. The method is short. We take a
 published claim, re-run its demonstration under every generator in the
-library, and report the verdict. The selection leaned toward claims we
-knew to be useful or hoped would be, so a flip here is evidence about a
-claim's scope.
+library, and report the verdict.
 
 We audit one claim from each of eleven fields: seven about estimators and
 constructions (Table~\ref{tab:audits}) and four about inference and
@@ -625,11 +632,25 @@ are ordered by mean rank.}\label{fig:ranking}
 
 \section{Scope}
 
-The audits measure the ensemble-sensitivity of a claim, often outside the careful scope of the authors' original intent.
-Stein proved that screening depends on smoothness; \citet{bickel2008} state the bandable class their banding rates require;
-L\'opez de Prado demonstrated HRP on equity covariances and said so; the
-data-assimilation literature has always tied localization to physical
-distance.
+The audits measure the ensemble-sensitivity of a claim, often outside the
+scope its authors gave it. Stein proved that screening depends on
+smoothness; \citet{bickel2008} state the bandable class their banding
+rates require; L\'opez de Prado demonstrated HRP on equity covariances and
+said so; the data-assimilation literature has always tied localization to
+physical distance.
+
+The selection of claims is ours, and it leaned toward methods we knew to
+be useful or hoped would be. A red cell in Figure~\ref{fig:matrix}
+therefore says where a claim holds, and says nothing against the claim
+where its authors placed it. Several audits run a method well outside the
+regime it was built for, deliberately, because that is where second-hand
+use puts it.
+
+The battery is a choice too. Fifteen named measures are not a uniform
+measure over correlation matrices, since no such thing exists, and they
+are not exhaustive. Adding a sixteenth ensemble can only add flips. Every
+verdict here is a statement about these fifteen laws, and the naming is
+what lets a reader add the sixteenth.
 
 The risk arises downstream, in less careful renderings of the original
 verdict. A claim certified under one measure is quoted, cited, and
@@ -637,7 +658,7 @@ defaulted into software as if it were measure-free, and the second-hand
 version of a scoped claim is usually unscoped. Naming the ensembles and
 shipping the tests is the remedy.
 
-\section{Remarks}
+\section{The pattern in the matrix}
 
 The pattern across Figure~\ref{fig:matrix} is not random: each field's
 signature claim performs best on the ensembles that resemble the data the
@@ -653,6 +674,8 @@ nominal level; they are also the most common default test bed.
 The same mechanism recurs under different names: the hedge that
 unconstrained minimum variance exploits is the null-steering that
 diagonal loading erases.
+
+\section{The docket}
 
 A survey of prominent covariance-method claims across further fields
 yields a docket for the next round, kept beside this paper. Sorting it
@@ -700,6 +723,8 @@ exist. The most instructive failures are invariant theorems wrapped in
 ensemble-relative plug-in practice, as when those corrections are
 applied to shrunk or tapered estimates whose distribution is no longer
 Wishart.
+
+\section{Closing}
 
 There is no free lunch. No method in the tables dominates across the rows. Each owns the
 ensembles whose structure it assumes, and the matrix draws the borders.
