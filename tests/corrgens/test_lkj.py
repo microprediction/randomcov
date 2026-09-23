@@ -68,13 +68,22 @@ def test_lkj_corr_eta_equals_one():
 
 
 def test_lkj_corr_eta_less_than_one():
-    """Test if eta < 1 results in stronger correlations (closer to -1 or 1)."""
-    n = 50
-    eta = 0.2  # Low eta should result in stronger correlations
-    corr_matrix = lkj_corr(n, eta)
-    off_diag_elements = corr_matrix - np.eye(n)  # Subtract identity matrix to isolate off-diagonals
-    max_corr = np.max(np.abs(off_diag_elements))
-    assert max_corr > 0.5, f"Off-diagonal correlations are too weak with eta={eta}"
+    """Lower eta spreads LKJ toward the boundary, so correlations grow.
+
+    The comparison has to be at fixed n: under LKJ the marginal sd of a
+    correlation is 1/sqrt(2*eta + n - 1), so dimension shrinks correlations
+    as strongly as eta does, and "eta=0.2 gives max |r| > 0.5 at n=50" is
+    not a property of LKJ (it is about 0.5 on a lucky seed). The broken
+    generator passed it only because row 1 carried +/-0.71 at every eta.
+    """
+    n = 5
+    low = [lkj_corr(n, eta=0.2, rng=np.random.default_rng(k)) for k in range(20)]
+    high = [lkj_corr(n, eta=2.0, rng=np.random.default_rng(k)) for k in range(20)]
+    off = lambda C: np.abs(C - np.eye(n))
+    mean_low = np.mean([off(C).mean() for C in low])
+    mean_high = np.mean([off(C).mean() for C in high])
+    assert mean_low > 0.25, f"eta=0.2 correlations too weak: mean |r| = {mean_low:.3f}"
+    assert mean_low > mean_high, "eta=0.2 should give larger correlations than eta=2"
 
 
 def test_lkj_corr_different_dimensions():
