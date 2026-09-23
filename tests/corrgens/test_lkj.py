@@ -39,13 +39,22 @@ def test_lkj_corr_diagonal_elements():
 
 
 def test_lkj_corr_eta_greater_than_one():
-    """Test if higher eta values result in correlation matrices closer to identity matrix."""
+    """Higher eta concentrates LKJ toward the identity, so correlations shrink.
+
+    Under LKJ(eta) at n=5 each correlation is 2*Beta(a, a) - 1 with
+    a = eta + 3/2, so at eta=10 the marginal sd is about 0.2. The old version
+    of this test asserted max |r| > 0.5, which only the broken generator
+    (a symmetric Beta that pinned row 1 at +/-0.71 whatever eta was) could
+    satisfy. Seeded, and compared against eta=1 on the same seeds.
+    """
     n = 5
-    eta = 10.0  # High value for eta should produce correlations close to zero
-    corr_matrix = lkj_corr(n, eta)
-    off_diag_elements = corr_matrix - np.eye(n)  # Subtract identity to focus on off-diagonal
-    max_corr = np.max(np.abs(off_diag_elements))
-    assert max_corr > 0.5, f"Off-diagonal correlations are too high with eta={eta}"
+    high = [lkj_corr(n, eta=10.0, rng=np.random.default_rng(k)) for k in range(20)]
+    low = [lkj_corr(n, eta=1.0, rng=np.random.default_rng(k)) for k in range(20)]
+    off = lambda C: np.abs(C - np.eye(n))
+    mean_high = np.mean([off(C).mean() for C in high])
+    mean_low = np.mean([off(C).mean() for C in low])
+    assert mean_high < 0.3, f"eta=10 correlations too large: mean |r| = {mean_high:.3f}"
+    assert mean_high < mean_low, "eta=10 should give smaller correlations than eta=1"
 
 
 def test_lkj_corr_eta_equals_one():
