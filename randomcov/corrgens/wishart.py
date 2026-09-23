@@ -4,13 +4,17 @@ from scipy.stats import wishart
 
 def wishart_corr(n, rng=None):
     """
-    Generates a correlation matrix using the Wishart distribution.
+    Normalized Wishart sample correlation: the sample correlation of 2n
+    independent standard Gaussian observations of n variables, so the
+    aspect ratio T/n is fixed at 2 and the eigenvalue bulk follows the
+    Marchenko-Pastur law for that ratio. This is the estimation-noise
+    ensemble, with no population structure at all.
 
     Args:
-        n (int): Number of variables.
+        n (int): Number of variables. Degrees of freedom are 2n.
 
     Returns:
-        pd.DataFrame: Generated correlation matrix.
+        np.ndarray: Generated correlation matrix.
     """
 
     # Step 1: Generate a random positive definite scale matrix (identity for simplicity)

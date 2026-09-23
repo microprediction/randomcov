@@ -32,8 +32,9 @@ def random_correlation_matrix(
     """
     logger.info("Starting correlation matrix generation.")
 
-    if corr_kwargs is None:
-        corr_kwargs = {}
+    # copy: setdefault on the caller's dict would leak this call's seed into their next one
+
+    corr_kwargs = dict(corr_kwargs) if corr_kwargs is not None else {}
     if rng is not None:
         corr_kwargs.setdefault("rng", rng)
 
