@@ -13,6 +13,13 @@
 \makeatother
 \emergencystretch=1.5em
 
+% Run-in headings italic rather than article's bold (house style).
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}{-1em}%
+  {\normalfont\normalsize\itshape}}
+\makeatother
+
 \title{Covariance-Method Claims Are Ensemble-Relative:\\
 Named Measures and an Audit Program}
 \author{Peter Cotton\thanks{\texttt{peter.cotton@microprediction.com}. The
@@ -27,20 +34,19 @@ every number here live beside this paper at
 \begin{abstract}
 A claim about the behavior of a covariance or correlation method is a
 claim about a distribution over matrices, and the distribution is rarely
-stated. We measure how much that omission matters. Across fifteen named,
-seeded ensembles at identical dimension and sample size, the
-Ledoit--Wolf shrinkage intensity ranges from $0.07$ to $0.86$, and eleven
-audited claims from eleven fields flip verdict as the ensemble changes,
-for stated structural reasons. The \texttt{randomcov} library names the
-measures and seeds the draws, so any claim can be re-run under all
-fifteen; the results assemble into a matrix of claims against measures,
-and a joint leaderboard of scikit-learn and \texttt{precise} estimators
-has five different winners. The pattern survives scale: six of seven
-claims re-run from $n=30$ to $n=3000$ keep their verdict, and the
-seventh, hierarchical risk parity, flips under its own home-turf
-ensemble as dimension grows. Eleven audits are completed here; a docket
-from astronomy, genomics, neuroscience, and chemometrics, including
-ensemble-invariant null controls, is assembled for the rest.
+stated. We measure how much that omission matters by re-running eleven
+published claims from eleven fields under fifteen named, seeded
+ensembles at identical dimension and sample size. Every claim flips
+verdict as the ensemble changes, for stated structural reasons, and a
+joint leaderboard of scikit-learn and \texttt{precise} estimators has a
+different winner under different measures. The pattern survives scale:
+the verdicts at $n=30$ predict those at $n=3000$ for every claim but
+hierarchical risk parity, which flips under its own home-turf ensemble
+as dimension grows. The \texttt{randomcov} library names the measures
+and seeds the draws, so any claim can be re-run under all fifteen, and a
+docket of further claims from astronomy, genomics, neuroscience, and
+chemometrics, with ensemble-invariant null controls, is assembled for
+the next round.
 \end{abstract}
 
 \section{The unstated measure}
@@ -90,7 +96,7 @@ mirror image: an inverse-Wishart prior biases the posterior variance upward
 and the correlation toward zero when the true variance is small relative to
 the prior mean, and the bias persists as the sample grows.
 
-What the present paper adds is the instrument and the audits: a fixed
+The present paper adds the instrument and the audits: a fixed
 battery of fifteen named, seeded, public measures; the re-execution of
 eleven published claims from eleven fields under all of them; the
 claims-by-measures matrix as the reporting format; and provably invariant
@@ -502,7 +508,7 @@ claim's home turf, the correlation structure it was demonstrated on or
 intended for.}\label{fig:matrix}
 \end{figure}
 
-\section{Do claims scale?}\label{sec:scale}
+\section{Verdicts from $n=30$ to $n=3000$}\label{sec:scale}
 
 Every study above fixes $n=30$. A reasonable objection is that
 ensemble-relativity is a small-panel artifact, that estimation noise
