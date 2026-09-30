@@ -93,6 +93,11 @@ def build_cells(raw, prior_cells, audits, verbose=False):
         for a in AUDITS:
             if a not in audits and c["values"].get(a):
                 fresh["values"][a] = c["values"][a]
+        # notes of audits this run did not compute belong to the prior
+        # values carried above, so carry them too
+        for k, v in c.get("notes", {}).items():
+            if k.split("@")[0].split("_")[0] not in audits:
+                fresh["notes"].setdefault(k, v)
         extended += 1
     if verbose:
         print(f"merge: {len(kept)} prior cells kept, {len(cells)} recomputed"
@@ -280,12 +285,29 @@ def run_cell_inner(task):
             except Exception as exc:              # noqa: BLE001
                 notes[f"lw_inverse@{T}"] = f"{type(exc).__name__}"
             if lw_loss and run_cv:
-                try:
-                    gl = GraphicalLassoCV(max_iter=200).fit(X).precision_
-                    out["gl"][T] = float(np.linalg.norm(gl - Theta, "fro")
-                                         / lw_loss)
-                except Exception as exc:          # noqa: BLE001
-                    notes[f"gl@{T}"] = f"{type(exc).__name__}"
+                # The refit at the CV-chosen penalty can leave the SPD cone
+                # when the default grid (down to alpha_max / 100) reaches
+                # too low, as the fixed-penalty fit does below. Raise the
+                # grid's floor until the fit survives. On the failing cells
+                # the ratio agrees to four digits across floors, so this
+                # recovers the metric rather than choosing a new estimator.
+                emp = np.cov(X, rowvar=False, bias=True)
+                a_max = np.max(np.abs(emp - np.diag(np.diag(emp))))
+                for floor_ratio in (None, 0.02, 0.05, 0.1, 0.2, 0.5):
+                    kw = {} if floor_ratio is None else {"alphas": list(
+                        np.logspace(np.log10(a_max * floor_ratio),
+                                    np.log10(a_max), 4))}
+                    try:
+                        gl = GraphicalLassoCV(max_iter=200,
+                                              **kw).fit(X).precision_
+                        out["gl"][T] = float(np.linalg.norm(gl - Theta,
+                                                            "fro") / lw_loss)
+                        notes.pop(f"gl@{T}", None)
+                        if floor_ratio is not None:
+                            notes[f"gl_floor@{T}"] = f"{floor_ratio:g}"
+                        break
+                    except Exception as exc:      # noqa: BLE001
+                        notes[f"gl@{T}"] = f"{type(exc).__name__}"
             if lw_loss and run_fixed:
                 # theory-driven penalty rather than a CV path: one fit, so
                 # it survives to n = 3000. Applied to the sample correlation
