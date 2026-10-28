@@ -10,8 +10,17 @@ def is_valid_corr(corr_matrix):
     Returns:
         bool: True if valid, False otherwise.
     """
-    # Check if the matrix is square
-    if corr_matrix.shape[0] != corr_matrix.shape[1]:
+    try:
+        corr_matrix = np.asarray(corr_matrix, dtype=float)
+    except (TypeError, ValueError):
+        return False
+
+    # Check if the matrix is 2D and square
+    if corr_matrix.ndim != 2 or corr_matrix.shape[0] != corr_matrix.shape[1]:
+        return False
+
+    # Reject NaN/Inf before allclose, which treats matching infinities as equal
+    if not np.isfinite(corr_matrix).all():
         return False
 
     # Check if the diagonal elements are 1
@@ -23,7 +32,12 @@ def is_valid_corr(corr_matrix):
         return False
 
     # Check if the matrix is positive semi-definite
-    eigenvalues = np.linalg.eigvalsh(corr_matrix)
+    try:
+        eigenvalues = np.linalg.eigvalsh(corr_matrix)
+    except np.linalg.LinAlgError:
+        return False
+    if not np.isfinite(eigenvalues).all():
+        return False
     if np.any(eigenvalues < -1e-8):  # Allowing a small numerical tolerance
         return False
 
