@@ -531,11 +531,13 @@ more as $n$ grows ($0.293\to0.148$ at $T/n=2$) and hurts \texttt{factor}
 far more ($1.366\to9.432$); its verdict does not flip for a single
 literature ensemble between $n=30$ and $n=3000$ at fixed $T/n=2$, and
 neither does diagonal loading's, the graphical lasso's, or Gaspari--Cohn
-tapering's.\footnote{The fixed-penalty graphical lasso records one
-nominal flip, \texttt{lkj} from $1.004$ to $1.000$, indistinguishable
-from a tie. The cross-validated graphical lasso is incomplete at
-$n=1000$, roughly half its cells missing to per-cell timeouts, and
-dropped entirely at $n=3000$, where a single fit runs into the hour.} So
+tapering's.\footnote{The cross-validated graphical lasso is compared
+from $n=30$ to $n=1000$. It is not run at $n=3000$, where a single fit
+runs into the hour. At $n=1000$ and above, both graphical-lasso ratios
+for \texttt{lkj}, \texttt{onion}, \texttt{vine},
+\texttt{archakov\_hansen} and \texttt{kernel} lie within $10^{-3}$ of
+one, so for those ensembles an unchanged verdict means an unchanged
+tie.} So
 for six of the seven claims re-run, a claim's ensemble-verdict at $n=30$
 is a reliable predictor of its verdict at a hundred times the dimension.
 
@@ -582,16 +584,18 @@ no per-draw variance, while HRP's long-only optimizer does, so twelve
 draws are trustworthy for one and not for the other. The fragility is a
 property of the HRP audit's statistic.
 
-Five of the fifteen ensembles turn numerically rank-deficient at the
-largest dimensions tested and need a positive-semidefinite floor before
-any audit runs: three package-native curiosities (\texttt{walk} on
-$58\%$ of $n=3000$ panels, \texttt{residuals} on $33\%$,
-\texttt{animals} on $17\%$) and two literature ensembles
-(\texttt{archakov\_hansen} on $14\%$, \texttt{kernel} on $3\%$). The
-floor is applied before scoring, so the numbers above already reflect
-it; a reader citing an \texttt{archakov\_hansen} or \texttt{kernel}
-verdict at $n=3000$ should know that a seventh to a thirtieth of its
-draws needed rescue just to stay a valid correlation matrix.
+Five of the fifteen ensembles turn numerically rank-deficient at
+$n=3000$, and every one of their draws there needs a
+positive-semidefinite floor before any audit runs. Three are
+package-native curiosities, with median numerical rank $1727$
+(\texttt{walk}), $499$ (\texttt{animals}) and $54$
+(\texttt{residuals}) out of $3000$. Two are literature ensembles:
+\texttt{archakov\_hansen} at rank $405$ and \texttt{kernel} at $81$.
+The floor is applied before scoring, so the numbers above already
+reflect it. A reader citing an \texttt{archakov\_hansen} or
+\texttt{kernel} verdict at $n=3000$ should know that each draw needed
+rescue to stay a valid correlation matrix, and that its numerical rank
+was a seventh of the dimension or less.
 
 \begin{figure}[p]
 \centering
